@@ -293,6 +293,7 @@ CARDS
 	margin-right: 5px;
 }
 
+
 .card .author a {
 	color: #333;
 	text-decoration: none;
@@ -778,6 +779,11 @@ body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4 {
 }
 
 a {
+	text-decoration: none;
+}
+
+/*
+a {
 	color: #9c27b0;
 	text-decoration: none;
 }
@@ -785,7 +791,7 @@ a {
 a:hover {
 	color: #9c27b0;
 	text-decoration: underline;
-}
+}*/
 
 p {
 	color: #3C4857;
@@ -833,4 +839,21 @@ h5, .h5 {
 h6, .h6 {
 	font-size: 0.9em;
 	font-weight: 500;
+}
+
+figure:hover+span {
+	bottom: -36px;
+	opacity: 1;
+}
+
+/* Zoom In #1 */
+.card-image figure img {
+	-webkit-transform: scale(1);
+	transform: scale(1);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+}
+.card-image figure:hover img {
+	-webkit-transform: scale(1.3);
+	transform: scale(1.3);
 }
