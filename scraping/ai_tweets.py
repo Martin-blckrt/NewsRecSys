@@ -37,7 +37,11 @@ def main():
     # query = "(" + query_string + ") -is:retweet -is:reply -is:quote lang:en"
 
     # Search for tweets
-    tweets = client.search_recent_tweets(query=query, max_results=10)
+    tweets = client.search_recent_tweets(query=query,
+                                         max_results=10,
+                                         expansions=['author_id', 'attachments.media_keys'],
+                                         media_fields=['public_metrics'],
+                                         tweet_fields=["public_metrics"])
     results = []
     tweets_data = tweets.data
 
@@ -50,12 +54,18 @@ def main():
             for search, replace in substitutions:
                 text = re.sub(search, replace, text)
 
+            author_metrics = client.get_user(id=tweet.author_id, user_fields=['public_metrics'])
+
             # Create a dictionary representing the tweet
             obj = {'id': tweet.id,
+                   'author': tweet.author_id,
+                   'followers': author_metrics.data.public_metrics['followers_count'],
                    'text': text,
-                   'likes': client.get_liking_users(tweet.id).meta['result_count'],
-                   "quotes": client.get_quote_tweets(tweet.id).meta['result_count'],
-                   "retweets": client.get_retweeters(tweet.id).meta['result_count'],
+                   'likes': tweet.public_metrics['like_count'],
+                   "quotes": tweet.public_metrics['quote_count'],
+                   "retweets": tweet.public_metrics['retweet_count'],
+                   "replies": tweet.public_metrics['reply_count'],
+                   "impressions": tweet.public_metrics['impression_count']
                    }
             results.append(obj)  # Add the tweet to the results
 
