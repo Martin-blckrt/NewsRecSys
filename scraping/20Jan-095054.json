@@ -1,0 +1,316 @@
+{
+    "_type": "News",
+    "webSearchUrl": "https://www.bing.com/news/search?q=Technology+News&form=TNSA02",
+    "value": [
+        {
+            "_type": "NewsArticle",
+            "name": "Google-parent Alphabet is cutting 12,000 jobs",
+            "url": "https://www.msn.com/en-us/money/news/google-parent-alphabet-is-cutting-12000-jobs/ar-AA16yl62",
+            "image": {
+                "_type": "ImageObject",
+                "thumbnail": {
+                    "_type": "ImageObject",
+                    "contentUrl": "https://www.bing.com/th?id=OVFT.QQEJ9iTE-GixYNoZIAwGRi&pid=News",
+                    "width": 600,
+                    "height": 315
+                },
+                "isLicensed": true
+            },
+            "description": "Google parent Alphabet is eliminating about 12,000 jobs, or 6% of its workforce, the company said Friday, in the latest cuts to shake the technology sector.",
+            "provider": [
+                {
+                    "_type": "Organization",
+                    "name": "CNN",
+                    "image": {
+                        "_type": "ImageObject",
+                        "thumbnail": {
+                            "_type": "ImageObject",
+                            "contentUrl": "https://www.bing.com/th?id=ODF.t0BGYosS4GKZSebCajKQGA&pid=news"
+                        }
+                    }
+                }
+            ],
+            "datePublished": "2023-01-20T13:39:00.0000000Z"
+        },
+        {
+            "_type": "NewsArticle",
+            "name": "IonQ will open quantum computer factory in the Seattle area and plans to invest $1B",
+            "url": "https://www.msn.com/en-us/news/technology/ionq-will-open-quantum-computer-factory-in-the-seattle-area-and-plans-to-invest-1b/ar-AA16yLal",
+            "image": {
+                "_type": "ImageObject",
+                "thumbnail": {
+                    "_type": "ImageObject",
+                    "contentUrl": "https://www.bing.com/th?id=OVFT.WgqBRvQqGHY8FVkKCW-6Ii&pid=News",
+                    "width": 1200,
+                    "height": 630
+                },
+                "isLicensed": true
+            },
+            "description": "Maryland-based IonQ says it\u2019s opening a 65,000-square foot research and manufacturing facility in Bothell, Wash., to build quantum computers.",
+            "provider": [
+                {
+                    "_type": "Organization",
+                    "name": "Geekwire",
+                    "image": {
+                        "_type": "ImageObject",
+                        "thumbnail": {
+                            "_type": "ImageObject",
+                            "contentUrl": "https://www.bing.com/th?id=ODF.8xuMx67galb6fHwFjOgRrA&pid=news"
+                        }
+                    }
+                }
+            ],
+            "datePublished": "2023-01-20T13:00:00.0000000Z"
+        },
+        {
+            "_type": "NewsArticle",
+            "name": "Great White Shark With Battle Scars and Scratches Filmed by Scientists",
+            "url": "https://www.msn.com/en-us/news/world/great-white-shark-with-battle-scars-and-scratches-filmed-by-scientists/ar-AA16z4Pz",
+            "image": {
+                "_type": "ImageObject",
+                "thumbnail": {
+                    "_type": "ImageObject",
+                    "contentUrl": "https://www.bing.com/th?id=OVFT.jc7FHLHjJb0jzXnR-zC7Dy&pid=News",
+                    "width": 1200,
+                    "height": 630
+                },
+                "isLicensed": true
+            },
+            "description": "\"Her presence was awe-inspiring,\" researcher Riley Elliott said of the 10.5-foot-long great white that was tagged in New Zealand as part of a tracking project.",
+            "provider": [
+                {
+                    "_type": "Organization",
+                    "name": "Newsweek",
+                    "image": {
+                        "_type": "ImageObject",
+                        "thumbnail": {
+                            "_type": "ImageObject",
+                            "contentUrl": "https://www.bing.com/th?id=ODF.uTJA7JDoTGKvff5o3jotfg&pid=news"
+                        }
+                    }
+                }
+            ],
+            "datePublished": "2023-01-20T13:37:00.0000000Z"
+        },
+        {
+            "_type": "NewsArticle",
+            "name": "4 questions to ask when evaluating AI prototypes for bias",
+            "url": "https://www.msn.com/en-us/news/technology/4-questions-to-ask-when-evaluating-ai-prototypes-for-bias/ar-AA16yR1x",
+            "description": "As AI teams bring new products to life, it\u2019s critical that they ask themselves the right questions to eliminate all kinds of bias. 4 questions to ask when evaluating AI prototypes for bias by Ram Iyer",
+            "provider": [
+                {
+                    "_type": "Organization",
+                    "name": "TechCrunch",
+                    "image": {
+                        "_type": "ImageObject",
+                        "thumbnail": {
+                            "_type": "ImageObject",
+                            "contentUrl": "https://www.bing.com/th?id=ODF.M4e-NwwkSCFuKsTp672mxA&pid=news"
+                        }
+                    }
+                }
+            ],
+            "datePublished": "2023-01-20T14:00:00.0000000Z"
+        },
+        {
+            "_type": "NewsArticle",
+            "name": "Top Phones to Expect in 2023: Galaxy S23, iPhone 15 and More",
+            "url": "https://www.msn.com/en-us/news/technology/top-phones-to-expect-in-2023-galaxy-s23-iphone-15-and-more/ar-AA15b5U7",
+            "image": {
+                "_type": "ImageObject",
+                "thumbnail": {
+                    "_type": "ImageObject",
+                    "contentUrl": "https://www.bing.com/th?id=OVFT.jx3YbmC7MyTvomBVzbP-Xi&pid=News",
+                    "width": 1200,
+                    "height": 630
+                },
+                "isLicensed": true
+            },
+            "description": "Thinking about upgrading your phone this year? Here's what Samsung, Apple, Google and OnePlus may have in store.",
+            "provider": [
+                {
+                    "_type": "Organization",
+                    "name": "CNET",
+                    "image": {
+                        "_type": "ImageObject",
+                        "thumbnail": {
+                            "_type": "ImageObject",
+                            "contentUrl": "https://www.bing.com/th?id=ODF.vS3pKUrPWgIKkQBHtUkEPQ&pid=news"
+                        }
+                    }
+                }
+            ],
+            "datePublished": "2023-01-20T12:30:00.0000000Z"
+        },
+        {
+            "_type": "NewsArticle",
+            "name": "EU watchdogs agree on how to handle certain cookie consent dark patterns",
+            "url": "https://www.msn.com/en-us/news/technology/eu-watchdogs-agree-on-how-to-handle-certain-cookie-consent-dark-patterns/ar-AA16yBAM",
+            "description": "Cookie consent banners that use blatant design tricks to try to manipulate web users into agreeing to hand over their data for behavioral advertising, instead of giving people a free and fair choice",
+            "provider": [
+                {
+                    "_type": "Organization",
+                    "name": "TechCrunch",
+                    "image": {
+                        "_type": "ImageObject",
+                        "thumbnail": {
+                            "_type": "ImageObject",
+                            "contentUrl": "https://www.bing.com/th?id=ODF.M4e-NwwkSCFuKsTp672mxA&pid=news"
+                        }
+                    }
+                }
+            ],
+            "datePublished": "2023-01-20T12:02:00.0000000Z"
+        },
+        {
+            "_type": "NewsArticle",
+            "name": "This $30,000 computer\u2019s source code has just been released for free",
+            "url": "https://www.msn.com/en-us/news/technology/this-30-000-computer-s-source-code-has-just-been-released-for-free/ar-AA16y9ma",
+            "image": {
+                "_type": "ImageObject",
+                "thumbnail": {
+                    "_type": "ImageObject",
+                    "contentUrl": "https://www.bing.com/th?id=OVFT.mWFiRB1Ymna5thcnBJ938y&pid=News",
+                    "width": 600,
+                    "height": 315
+                },
+                "isLicensed": true
+            },
+            "description": "The Apple Lisa changed the course of computing history. To mark its 40th birthday, its source code has been released for free by the Computing History Museum.",
+            "provider": [
+                {
+                    "_type": "Organization",
+                    "name": "Digital Trends",
+                    "image": {
+                        "_type": "ImageObject",
+                        "thumbnail": {
+                            "_type": "ImageObject",
+                            "contentUrl": "https://www.bing.com/th?id=ODF.x644vROjZrRe0pKC7YX3XQ&pid=news"
+                        }
+                    }
+                }
+            ],
+            "datePublished": "2023-01-20T11:56:00.0000000Z"
+        },
+        {
+            "_type": "NewsArticle",
+            "name": "Shadow acquires Android emulation startup Genymobile",
+            "url": "https://www.msn.com/en-us/news/technology/shadow-acquires-android-emulation-startup-genymobile/ar-AA16yFdz",
+            "description": "Shadow is making its first acquisition as it announced that it would snatch Genymobile, the company behind Genymotion. Shadow is better known for its cloud computing service that works particularly",
+            "provider": [
+                {
+                    "_type": "Organization",
+                    "name": "TechCrunch",
+                    "image": {
+                        "_type": "ImageObject",
+                        "thumbnail": {
+                            "_type": "ImageObject",
+                            "contentUrl": "https://www.bing.com/th?id=ODF.M4e-NwwkSCFuKsTp672mxA&pid=news"
+                        }
+                    }
+                }
+            ],
+            "datePublished": "2023-01-20T11:42:00.0000000Z"
+        },
+        {
+            "_type": "NewsArticle",
+            "name": "Climate crisis misinformation is thriving on Elon Musk's Twitter, research shows",
+            "url": "https://www.msn.com/en-us/money/other/climate-crisis-misinformation-is-thriving-on-elon-musks-twitter-research-shows/ar-AA16ymmb",
+            "image": {
+                "_type": "ImageObject",
+                "thumbnail": {
+                    "_type": "ImageObject",
+                    "contentUrl": "https://www.bing.com/th?id=OVFT.Ik5w_Wb99YMiA1NRuYsFDi&pid=News",
+                    "width": 1200,
+                    "height": 630
+                },
+                "isLicensed": true
+            },
+            "description": "The hashtag \"#ClimateScam\" suddenly spiked on Twitter in July 2022 and has been increasing ever since, per the study.",
+            "provider": [
+                {
+                    "_type": "Organization",
+                    "name": "Business Insider",
+                    "image": {
+                        "_type": "ImageObject",
+                        "thumbnail": {
+                            "_type": "ImageObject",
+                            "contentUrl": "https://www.bing.com/th?id=ODF.q-ZVWyz-qFnnPRsNgOLlfQ&pid=news"
+                        }
+                    }
+                }
+            ],
+            "datePublished": "2023-01-20T13:29:00.0000000Z"
+        },
+        {
+            "_type": "NewsArticle",
+            "name": "Indian food delivery giant Swiggy to cut 380 jobs",
+            "url": "https://www.msn.com/en-us/money/other/indian-food-delivery-giant-swiggy-to-cut-380-jobs/ar-AA16xQ8L",
+            "description": "Swiggy plans to lay off 380 jobs and shut down its meat marketplace as the Prosus Venture and SoftBank-backed Indian food delivery giant looks to navigate the market downturn that has forced firms to",
+            "provider": [
+                {
+                    "_type": "Organization",
+                    "name": "TechCrunch",
+                    "image": {
+                        "_type": "ImageObject",
+                        "thumbnail": {
+                            "_type": "ImageObject",
+                            "contentUrl": "https://www.bing.com/th?id=ODF.M4e-NwwkSCFuKsTp672mxA&pid=news"
+                        }
+                    }
+                }
+            ],
+            "datePublished": "2023-01-20T06:21:00.0000000Z"
+        },
+        {
+            "_type": "NewsArticle",
+            "name": "End of an era: Microsoft will soon stop selling Windows 10 licences",
+            "url": "https://www.msn.com/en-us/news/technology/end-of-an-era-microsoft-will-soon-stop-selling-windows-10-licences/ar-AA16yDm0",
+            "image": {
+                "_type": "ImageObject",
+                "thumbnail": {
+                    "_type": "ImageObject",
+                    "contentUrl": "https://www.bing.com/th?id=OVFT.nM7n9fadaMOj9r33O7-Jii&pid=News",
+                    "width": 1200,
+                    "height": 630
+                },
+                "isLicensed": true
+            },
+            "description": "Microsoft has announced that it will officially cease sales of Windows 10 licenses through its website on January 31, marking an end of sorts to the reign of the world\u2019s current most popular",
+            "provider": [
+                {
+                    "_type": "Organization",
+                    "name": "TechRadar",
+                    "image": {
+                        "_type": "ImageObject",
+                        "thumbnail": {
+                            "_type": "ImageObject",
+                            "contentUrl": "https://www.bing.com/th?id=ODF.HUwxplx_rx0g5pzCy5_Wwg&pid=news"
+                        }
+                    }
+                }
+            ],
+            "datePublished": "2023-01-20T12:21:00.0000000Z"
+        },
+        {
+            "_type": "NewsArticle",
+            "name": "Our Stars Are Disappearing From The Night Sky \u2013 Here's Why",
+            "url": "https://www.msn.com/en-us/news/technology/our-stars-are-disappearing-from-the-night-sky-here-s-why/ar-AA16yojF",
+            "description": "Star-gazing is becoming increasingly difficult in the modern world \u2013 and new research suggests it\u2019s only getting worse. NOIRLab, a US research centre for astronomy, has found that a child born today",
+            "provider": [
+                {
+                    "_type": "Organization",
+                    "name": "HuffPost UK",
+                    "image": {
+                        "_type": "ImageObject",
+                        "thumbnail": {
+                            "_type": "ImageObject",
+                            "contentUrl": "https://www.bing.com/th?id=ODF.0y8ov4dkxpxjENNw_hd4jw&pid=news"
+                        }
+                    }
+                }
+            ],
+            "datePublished": "2023-01-20T12:13:00.0000000Z"
+        }
+    ]
+}
