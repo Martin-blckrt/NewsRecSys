@@ -5,13 +5,14 @@ var ready = (callback) => {
 	else document.addEventListener("DOMContentLoaded", callback);
 }
 
-ready(() => { 
-	document.querySelector(".header").style.height = window.innerHeight + "px";
+ready(() => {
+
 })
 
-// set modal time delay before loading
-
-setTimeout(function() {
-	$('#demo-modal').modal();
-}, 500);
-
+window.addEventListener('load', function () {
+	ifr = document.querySelectorAll(".embedly-card iframe");
+	for (let i = 0; i < ifr.length; i++) {
+		let qu = ifr[i].contentWindow.document.querySelector('.reddit-post');
+		qu.style.border = 'none'
+	}
+})
