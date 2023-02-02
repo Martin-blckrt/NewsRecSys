@@ -1,6 +1,7 @@
 import csv
 import time
 import re
+import csv
 
 import tweepy as tw
 
@@ -11,12 +12,8 @@ ACCESS_TOKEN_SECRET = 'fZf4EzWGpdCjX0jNGejjXluxvXyhkbe4w5cpHZbbBQRhY'
 BEARER_TOKEN = 'AAAAAAAAAAAAAAAAAAAAAIAETwEAAAAAZ7Dlv5%2BvSt7AByWSAVrO%2BF0l2Jc' \
                '%3DKcoQGSBmO2ZoYXA8lJkPGD3O5Nm9PwuMYz4FqMk0gaIqahKxX4 '
 
-KEYWORDS = ['Generative AI', 'SOTA', 'pytorch', 'keras', 'kaggle', 'LLM', 'GAN', 'large language models', 'GoogleAI',
-            'ChatGPT', 'Data Scientist', 'Huggingface', 'kubernetes', 'fastai', 'deepmind', 'transformers', 'numpy',
-            'tensorflow']
-
-AUTHORS = ['AlphaSignalAI', 'RisingSayak', 'mrdbourke', 'keerthanpg', 'AiBreakfast', 'abacusai', 'dair_ai', 'Prathkum',
-           'marktenenholtz', 'Jeande_d', 'svpino', 'mathemagic1an', 'art_zucker', 'itsandrewgao']
+KEYWORD = False
+ACCOUNT = True
 
 
 def main():
@@ -28,13 +25,26 @@ def main():
                        access_token_secret=ACCESS_TOKEN_SECRET,
                        wait_on_rate_limit=True)
 
-    # Create a tweet search query for keywords
-    query = ' OR '.join(['({})'.format(keyword) for keyword in KEYWORDS])
-    query += ' -is:retweet -is:reply -is:quote lang:en'
+    data = []
 
-    # Create a tweet search query for authors
-    # query_string = " OR ".join(["from:" + author for author in AUTHORS])
-    # query = "(" + query_string + ") -is:retweet -is:reply -is:quote lang:en"
+    if KEYWORD:
+        # Create a tweet search query for keywords
+        with open('keywords.csv', "r") as file:
+            reader = csv.reader(file)
+            data = [row[0] for row in reader]
+
+        query = ' OR '.join(['({})'.format(keyword) for keyword in data])
+        query += ' -is:retweet -is:reply -is:quote lang:en'
+    else:
+        # Create a tweet search query for authors
+        with open('accounts.csv', "r") as file:
+            reader = csv.reader(file)
+            data = [row[0] for row in reader]
+
+        query_string = " OR ".join(["from:" + author for author in data])
+        query = "(" + query_string + ") -is:retweet -is:reply -is:quote lang:en"
+    
+
 
     # Search for tweets
     tweets = client.search_recent_tweets(query=query,
