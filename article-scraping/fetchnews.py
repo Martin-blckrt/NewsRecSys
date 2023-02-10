@@ -4,6 +4,10 @@ from datetime import datetime
 from decouple import config
 import pandas as pd
 
+"""
+OUTDATED AND EXPIRED
+Present seulement à des fins de preuves de recherche/rapport 
+"""
 
 conn = http.client.HTTPSConnection("bing-news-search1.p.rapidapi.com")
 
