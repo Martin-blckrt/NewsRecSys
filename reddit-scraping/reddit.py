@@ -10,12 +10,12 @@ from datetime import date
 CLIENT_ID = '6diVRhNTByDRS0H1aoWkiw'
 SECRET_TOKEN = 'CbyVa6RA_fRRlGlJyKgecPx8xEHa1A'
 USERNAME = 'TheMightyNivor'
-PASSWORD = 'De&&2skVR56#qg'
+PASSWORD = 'c^2mQU522&Py*R'
 
-CRITERIA = {'technology': {'score': 1000, 'num_comments': 0},
+CRITERIA = {'technology': {'score': 20, 'num_comments': 0},
             'realtech': {'score': 5, 'num_comments': 0},
-            'tech': {'score': 700, 'num_comments': 0},
-            'futurology': {'score': 1000, 'num_comments': 0}}
+            'tech': {'score': 20, 'num_comments': 0},
+            'futurology': {'score': 700, 'num_comments': 0}}
 
 USEFUL_DATA = ['subreddit',
                'selftext',
@@ -64,6 +64,7 @@ def scrape(headers):
     return res
 
 
+# add yonk if no selftext
 def sort(data):
     results = []
     for sub in data:
@@ -71,17 +72,20 @@ def sort(data):
             if ((
                         datetime.date.fromtimestamp(
                             int(post['data']['created_utc']) + (24 * 60 * 60))) >= datetime.date.today()) & (
-                    post['data']['num_reports'] is None):
+                    post['data']['stickied'] == False) & (post['data']['selftext'] != ""):
                 for feature in USEFUL_DATA:
                     if feature in CRITERIA[sub]:
                         if post['data'][feature] < CRITERIA[sub][feature]:
                             continue
 
                 obj = {'subreddit': post['data']['subreddit'],
-                       'selftext': post['data']['selftext'],
+                       'link_flair_text': post['data']['link_flair_text'],
                        'title': post['data']['title'],
+                       'selftext': post['data']['selftext'],
                        'author': post['data']['author'],
-                       'url': post['data']['url']
+                       'url': post['data']['url'],
+                       'ups': post['data']['ups'],
+                       'downs': post['data']['downs']
                        }
                 results.append(obj)
     return results
