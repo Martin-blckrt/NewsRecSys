@@ -207,7 +207,9 @@ def newsapi():
     top_sc = newsapi.get_top_headlines(category='science', language='en', page_size=50)
 
     articles = top_tech["articles"] + top_sc["articles"]
-    return articles
+    ndf = pd.json_normalize(articles)
+
+    return ndf
 
 
 def gnews():
@@ -218,8 +220,9 @@ def gnews():
     with urllib.request.urlopen(url) as response:
         data = json.loads(response.read().decode("utf-8"))
         articles = data["articles"]
+        gdf = pd.json_normalize(articles)
 
-    return articles
+    return gdf
 
 
 def init():
