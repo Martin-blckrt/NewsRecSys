@@ -1,6 +1,9 @@
 import azure.cosmos.cosmos_client as cosmos_client
+from azure.cosmos import exceptions, PartitionKey
+from azure.cosmos.exceptions import CosmosResourceExistsError
 import requests
 import datetime
+from datetime import timedelta
 import pandas as pd
 import tweepy as tw
 from newsapi import NewsApiClient
@@ -8,6 +11,11 @@ import json
 import urllib.request
 import re
 import numpy as np
+
+"""
+create a resource group
+create a azure cosmos db in the resource group
+"""
 
 
 def reddit():
@@ -246,6 +254,36 @@ def init():
     return client
 
 
+def create_db(client):
+    database_name = 'newsData'
+    try:
+        database = client.create_database(id=database_name)
+        print(f"Database created: {database.id}")
+    except exceptions.CosmosResourceExistsError:
+        database = client.get_database_client(database=database_name)
+        print("Database already exists.")
+
+    return database
+
+
+def create_container(database):
+    container_name = 'newsContainer'
+    try:
+        partition_key_path = PartitionKey(path="/id")
+        container = database.create_container(
+            id=container_name,
+            partition_key=partition_key_path,
+            offer_throughput=400,
+        )
+        print(f"Container created: {container.id}")
+
+    except CosmosResourceExistsError:
+        container = database.get_container_client(container=container_name)
+        print("Container already exists.")
+
+    return container
+
+
 def getdata():
     df_reddit = pd.DataFrame(reddit())
     df_twitter = pd.DataFrame(twitter())
@@ -286,15 +324,24 @@ def upsert(df, container):
     for i in range(0, df.shape[0]):
         # create a dictionary for the selected row
         data_dict = dict(df.iloc[i, :])
-        container.upsert_item(body=data_dict)
+        exists = False
+        # if no item exists with this url, insert the item
+        for _ in container.query_items(
+                query='SELECT * FROM c WHERE c.url="' + data_dict['url'] + '"',
+                enable_cross_partition_query=True):
+            exists = True
+        if not exists:
+            container.upsert_item(body=data_dict)
     print('Records inserted successfully.')
 
 
 if __name__ == '__main__':
     client = init()
-    database = client.get_database_client('newsData')
-    container = database.get_container_client('newsContainer')
+    database = create_db(client)
+    container = create_container(database)
     df = getdata()
     upsert(df, container)
-
-    # upsert/create/replace/read/read_all/conflict
+    limitTime = str(datetime.datetime.today() - timedelta(days=4))
+    for item in container.query_items(query='SELECT * FROM c WHERE c.time > "' + limitTime + '"',
+                                      enable_cross_partition_query=True):
+        container.delete_item(item, partition_key=item['id'])
