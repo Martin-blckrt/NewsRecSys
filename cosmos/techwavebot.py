@@ -341,7 +341,9 @@ if __name__ == '__main__':
     container = create_container(database)
     df = getdata()
     upsert(df, container)
+    """
     limitTime = str(datetime.datetime.today() - timedelta(days=4))
-    for item in container.query_items(query='SELECT * FROM c WHERE c.time > "' + limitTime + '"',
+    for item in container.query_items(query='SELECT * FROM c WHERE c.time < "' + limitTime + '"',
                                       enable_cross_partition_query=True):
         container.delete_item(item, partition_key=item['id'])
+    """
