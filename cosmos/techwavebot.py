@@ -177,7 +177,7 @@ def twitter():
                                          max_results=10,
                                          expansions=['author_id', 'attachments.media_keys'],
                                          media_fields=['public_metrics'],
-                                         tweet_fields=["public_metrics"])
+                                         tweet_fields=["public_metrics", 'created_at'])
     results = []
     tweets_data = tweets.data
 
@@ -202,8 +202,8 @@ def twitter():
                    "retweets": tweet.public_metrics['retweet_count'],
                    "replies": tweet.public_metrics['reply_count'],
                    "impressions": tweet.public_metrics['impression_count'],
-                   "url": "fakeTwitterURL",
-                   "time": datetime.datetime.now(),
+                   "url": "https://twitter.com/i/web/status/" + str(tweet.id),
+                   "time": tweet.created_at,
                    "source": "twitter"
                    }
             results.append(obj)  # Add the tweet to the results
@@ -297,6 +297,8 @@ def getdata():
 
     df_gnews = df_gnews.rename(columns={"source.name": "source",
                                         "publishedAt": "time"})
+
+    df_twitter['time'] = pd.to_datetime(df_twitter.time).dt.tz_localize(None)
 
     merged_social = pd.merge(df_reddit, df_twitter, on=['author', 'url', 'title', 'time', 'likes', 'source'],
                              how='outer')
