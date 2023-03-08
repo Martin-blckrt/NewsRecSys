@@ -14,7 +14,7 @@ class Agent:
         self.step_counter = 0
 
         self.action_space = action_space
-        self.action_count = {cat: 0 for cat in self.action_space}
+        self.action_count = {tup: 0 for tup in self.action_space}
 
         self.state, self.action, self.reward, self.next_state = None, None, None, None
         self.policy_net = DQN().to(device)
@@ -25,7 +25,7 @@ class Agent:
     def get_episode(
             self,
             state: np.ndarray = None,
-            action: str = None,
+            action: tuple = None,
             reward: int = None,
             next_state: np.ndarray = None,
     ) -> tuple:

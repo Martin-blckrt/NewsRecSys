@@ -32,5 +32,9 @@ OUTPUT_SIZE = 18  # action_space_size
 HIDDEN_SIZE = 64
 
 # Model stuff
-
 TARGET_UPDATE = 5
+
+# Env stuff
+RANDOM_NEWS_RATE = 0.1
+STATE_WINDOW = 3
+TOP_NEWS = 5

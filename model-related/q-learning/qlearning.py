@@ -48,7 +48,7 @@ class DQN(nn.Module):
         x = F.softmax(self.fc3(x), dim=-1)
         return x
 
-
+#TODO: make these variables dynamic and how to init state
 # Get number of actions from action space
 n_actions = NB_OF_CATEGORIES
 # Get the number of state observations
@@ -70,6 +70,7 @@ def select_action(curr_state):
 
 
 def optimize_model():
+    #TODO: study github version of this function
     if len(memory) < BATCH_SIZE:
         return
     episodes = memory.sample(BATCH_SIZE)
