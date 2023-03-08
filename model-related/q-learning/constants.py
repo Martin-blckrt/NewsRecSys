@@ -1,9 +1,13 @@
 from collections import namedtuple
+from os import getenv
 
+# server
+HOST = getenv('HOST', "localhost")
+PORT = int(getenv('PORT', 8000))
 
 # creates a struct with 4 four attributes
-Transition = namedtuple('Transition',
-                        ('state', 'action', 'next_state', 'reward'))
+Episode = namedtuple('Episode',
+                     ('state', 'action', 'next_state', 'reward'))
 
 MEMORY_SIZE = 1000
 
@@ -26,3 +30,7 @@ LR = 1e-4
 INPUT_SIZE = 376  # state_size
 OUTPUT_SIZE = 18  # action_space_size
 HIDDEN_SIZE = 64
+
+# Model stuff
+
+TARGET_UPDATE = 5
