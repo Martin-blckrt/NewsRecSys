@@ -32,7 +32,7 @@ class Model:
         self.iter_counter = 0
         self.reward_cum_sum = 0
 
-    def recommend_news(self, user_id: str) -> None:
+    def recommend_news(self, user_id: str) -> list:
         print("User ID is:", user_id)
 
         self.user_id = user_id
