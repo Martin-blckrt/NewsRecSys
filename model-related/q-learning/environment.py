@@ -40,14 +40,13 @@ class Environment:
         choice_df = self.news_data.loc[(self.news_data['source'] == action)]
 
         if random_news:
-            result = choice_df.iloc[np.random.randint(0, choice_df.shape[0])]["id"]
+            result = choice_df.iloc[np.random.randint(0, choice_df.shape[0])]
 
         else:
+
             df = choice_df.sort_values(by=["_ts"], ignore_index=True, ascending=False)
 
-            n_rows = df.shape[0]
-            n_news = min(n_rows, TOP_NEWS)
-
+            n_news = min(df.shape[0], TOP_NEWS)
             result = df.head(n_news)
 
         return result
