@@ -25,7 +25,7 @@ class Agent:
     def get_episode(
             self,
             state: np.ndarray = None,
-            action: tuple = None,
+            action: str = None,
             reward: int = None,
             next_state: np.ndarray = None,
     ) -> tuple:

@@ -28,7 +28,7 @@ TAU = 0.005
 LR = 1e-4
 
 INPUT_SIZE = 376  # state_size
-OUTPUT_SIZE = 18  # action_space_size
+OUTPUT_SIZE = 18
 HIDDEN_SIZE = 64
 
 # Model stuff

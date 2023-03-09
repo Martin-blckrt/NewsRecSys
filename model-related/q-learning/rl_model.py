@@ -40,9 +40,7 @@ class Model:
 
         action_info, self.action_tensor = self.agent.act(self.state)
 
-        self.action_news_id = self.env.get_action_news_id(action_info)
-
-        return self.env.get_news_info(self.action_news_id)
+        return self.env.get_action_news(action_info)
 
     def get_user_response(self, user_response: int) -> None:
 

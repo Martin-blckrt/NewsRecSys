@@ -20,14 +20,13 @@ class Environment:
 
     def get_action_space(self) -> list:
         """
-        Les actions sont de la forme d'un choix de news (source, tag)
-        :return: toutes combinaisons de source/tag
+        Les actions sont de la forme d'un choix de source
+        :return: toutes les valeurs différentes de source
         """
 
         unique_sources = pd.unique(self.news_data['source'])
-        unique_tags = pd.unique(self.news_data['tag'])
 
-        return list(set(itertools.combinations([unique_sources, unique_tags], 2)))
+        return list(set(unique_sources))
 
     def update_state(
             self, current_state: torch.Tensor, action: str, reward: torch.Tensor, user_id: str
@@ -35,27 +34,23 @@ class Environment:
 
         return
 
-    def get_action_news_id(self, action) -> str:
+    def get_action_news(self, action) -> list:
 
         random_news = np.random.uniform(0, 1) < self.news_rand_rate
-        choice_df = self.news_data.loc[(self.news_data['source'] == action[0]) & (self.news_data['tag'] == action[1])]
+        choice_df = self.news_data.loc[(self.news_data['source'] == action)]
 
         if random_news:
             result = choice_df.iloc[np.random.randint(0, choice_df.shape[0])]["id"]
 
         else:
-            # TODO: check time stuff with clem/mart
             df = choice_df.sort_values(by=["_ts"], ignore_index=True, ascending=False)
 
             n_rows = df.shape[0]
             n_news = min(n_rows, TOP_NEWS)
 
-            result = df["id"][0:n_news].values[np.random.randint(0, n_news)]
+            result = df.head(n_news)
 
         return result
-
-    def get_news_info(self, news_id: str):
-        return self.news_data.loc[news_id]
 
     def get_reward(self, user_input: int) -> torch.Tensor:
         if user_input == 1:
