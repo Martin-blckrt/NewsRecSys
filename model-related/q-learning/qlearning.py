@@ -48,11 +48,6 @@ class DQN(nn.Module):
         return x
 
 
-def select_action(curr_state):
-    # blurg
-    return curr_state
-
-
 def optimize_model(
         memory: ReplayMemory, policy_net: DQN, target_net: DQN, optimizer: torch.optim
 ) -> None:
