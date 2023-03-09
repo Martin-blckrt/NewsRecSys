@@ -58,7 +58,7 @@ def optimize_model(
 ) -> None:
     if len(memory) < BATCH_SIZE:
         return
-    episodes = memory.sample()
+    episodes = memory.sample(BATCH_SIZE)
     batch = Episode(*zip(*episodes))
     state_batch = torch.cat(batch.state).reshape(BATCH_SIZE, -1)
     action_batch = torch.cat(batch.action)
