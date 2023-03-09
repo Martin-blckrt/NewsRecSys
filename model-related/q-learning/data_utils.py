@@ -28,7 +28,7 @@ def load_db_dataset():
     key = 'IXFtnebOUiBI846pbqYjUymPIUDeIcX33zNi3zhlqSRzGIlmKNwGdmGMF7cnHVCMV90N9zSfYbE5ACDbEIffyw=='
     client = document_client.DocumentClient(uri, {'masterKey': key})
 
-    # retrieve the data
+    # build the query
     query = {'query': 'SELECT * FROM c'}
 
     # execute the query

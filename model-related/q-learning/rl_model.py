@@ -58,7 +58,7 @@ class Model:
         )
 
         self.memory.push(Episode(self.state, self.action_tensor, next_state, reward))
-        optimize_model()
+        optimize_model(self.memory, self.policy_net, self.target_net, self.optimizer)
 
         if self.iter_counter % self.target_update == 0:
             self.target_net.load_state_dict(self.policy_net.state_dict())

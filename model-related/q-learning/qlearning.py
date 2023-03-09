@@ -13,7 +13,6 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
-
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
@@ -48,59 +47,34 @@ class DQN(nn.Module):
         x = F.softmax(self.fc3(x), dim=-1)
         return x
 
-#TODO: make these variables dynamic and how to init state
-# Get number of actions from action space
-n_actions = NB_OF_CATEGORIES
-# Get the number of state observations
-state = INITIAL_STATE
-n_observations = len(state)
-
-policy_net = DQN(n_observations, n_actions).to(device)
-target_net = DQN(n_observations, n_actions).to(device)
-target_net.load_state_dict(policy_net.state_dict())
-
-optimizer = optim.AdamW(policy_net.parameters(), lr=LR, amsgrad=True)
-
-memory = ReplayMemory(MEMORY_SIZE)
-
 
 def select_action(curr_state):
     # blurg
     return curr_state
 
 
-def optimize_model():
-    #TODO: study github version of this function
+def optimize_model(
+        memory: ReplayMemory, policy_net: DQN, target_net: DQN, optimizer: torch.optim
+) -> None:
     if len(memory) < BATCH_SIZE:
         return
-    episodes = memory.sample(BATCH_SIZE)
-
+    episodes = memory.sample()
     batch = Episode(*zip(*episodes))
-
-    non_final_mask = torch.tensor(tuple(map(lambda s: s is not None,
-                                            batch.next_state)), device=device, dtype=torch.bool)
-    non_final_next_states = torch.cat([s for s in batch.next_state
-                                       if s is not None])
-    state_batch = torch.cat(batch.state)
+    state_batch = torch.cat(batch.state).reshape(BATCH_SIZE, -1)
     action_batch = torch.cat(batch.action)
-    reward_batch = torch.cat(batch.reward)
-
-    state_action_values = policy_net(state_batch).gather(1, action_batch)
-
-    next_state_values = torch.zeros(BATCH_SIZE, device=device)
-    with torch.no_grad():
-        next_state_values[non_final_mask] = target_net(non_final_next_states).max(1)[0]
-
-    # Compute the expected Q values
+    reward_batch = torch.cat(batch.reward).reshape(BATCH_SIZE, -1).expand(-1, OUTPUT_SIZE).reshape(-1)
+    next_state_batch = torch.cat(batch.next_state).reshape(BATCH_SIZE, -1)
+    state_action_values = (
+        policy_net(state_batch)
+        .gather(1, action_batch.type(torch.int64).unsqueeze(0))
+        .squeeze(0)
+    )
+    next_state_values = target_net(next_state_batch).reshape(-1)
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
-
-    # Compute Huber loss
     criterion = nn.SmoothL1Loss()
-    loss = criterion(state_action_values, expected_state_action_values.unsqueeze(1))
-
-    # Optimize the model
+    loss = criterion(state_action_values, expected_state_action_values)
     optimizer.zero_grad()
     loss.backward()
-    # In-place gradient clipping
-    torch.nn.utils.clip_grad_value_(policy_net.parameters(), 100)
+    for param in policy_net.parameters():
+        param.grad.data.clamp_(-1, 1)
     optimizer.step()
