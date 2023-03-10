@@ -22,16 +22,18 @@ def create_model(user_id: str) -> None:
     model.login_user(user_id, local=True)
 
 
-@app.get('/recommend-news/{user_id}')
-def recommend_news(user_id: str) -> dict:
-    recommended = model.recommend_news(user_id)
+@app.get('/recommend-news/')
+def recommend_news() -> dict:
+    # l'user_id n'est plus là car on l'a déjà grâce au login
+    recommended = model.recommend_news()
     return {
         'news': recommended
     }
 
 
 @app.get('/response/{user_response}')
-def get_user_response(user_response: int) -> None:
+def get_user_response(user_response: str) -> None:
+    # for now, user response = id de la news cliquée
     model.get_user_response(user_response)
 
 
@@ -39,3 +41,4 @@ if __name__ == '__main__':
     run(app=app, host=HOST, port=PORT)
     # when app turns off, save history
     model.env.synchronize_history(model.user_id)
+    print("End of the program, thx bye bye")

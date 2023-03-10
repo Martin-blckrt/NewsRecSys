@@ -61,15 +61,15 @@ class Model:
         action_info, self.action_tensor = self.agent.act(self.state)
         self.action_news = self.env.get_action_news(action_info)
 
-        # may be temporary but is supposed to send list of news id
-        self.env.update_history(self.action_news['id'])
-
         return self.action_news
 
-    def get_user_response(self, user_response: int) -> None:
+    def get_user_response(self, user_response: str) -> None:
         print("User Response is:", user_response)
 
         reward = self.env.get_reward(user_response)
+
+        # may be temporary but is supposed to send news id in the function
+        self.env.update_history(user_response)
 
         next_state = self.env.update_state(
             current_state=self.state,

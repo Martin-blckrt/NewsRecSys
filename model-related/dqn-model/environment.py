@@ -43,7 +43,6 @@ class Environment:
     def synchronize_history(self, user_id) -> None:
         sync_history(user_id, self.history)
 
-
     def get_action_news(self, action) -> list:
 
         random_news = np.random.uniform(0, 1) < self.news_rand_rate
@@ -60,7 +59,8 @@ class Environment:
 
         return result
 
-    def get_reward(self, user_input: int) -> torch.Tensor:
+    def get_reward(self, user_input: str) -> torch.Tensor:
+        # TODO: from user_input (news ID), create the reward
         if user_input == 1:
             return torch.tensor([1])
         elif user_input == -1:
