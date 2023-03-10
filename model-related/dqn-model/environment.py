@@ -61,6 +61,10 @@ class Environment:
 
     def get_reward(self, user_input: str) -> torch.Tensor:
         # TODO: from user_input (news ID), create the reward
+        # idée ?
+        # +1 si reco dans une source déjà déjà reco avant
+        # +0 ou -1 si reco dans une source pas vues avant
+        # ou alors -1 sur les news PAS cliquée mais nécessite de changer un peu le système
         if user_input == 1:
             return torch.tensor([1])
         elif user_input == -1:
