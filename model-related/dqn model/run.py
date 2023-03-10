@@ -17,6 +17,11 @@ app.add_middleware(
 )
 
 
+@app.get('/login/{user_id}')
+def create_model(user_id: str) -> None:
+    model.login_user(user_id, local=True)
+
+
 @app.get('/recommend-news/{user_id}')
 def recommend_news(user_id: str) -> dict:
     recommended = model.recommend_news(user_id)

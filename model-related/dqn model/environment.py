@@ -1,16 +1,16 @@
 import pandas as pd
 import numpy as np
-import itertools
 import torch
-from data_utils import load_dataset
+from data_utils import load_dataset, load_history
 from constants import RANDOM_NEWS_RATE, STATE_WINDOW, TOP_NEWS
 
 
 class Environment:
 
-    def __init__(self, *, local: bool = True):
+    def __init__(self, *, user_id: str, local: bool = True):
 
         self.news_data = load_dataset(local)
+        self.history = load_history(user_id, local)
         self.news_data.set_index('id', inplace=True)
         self.news_rand_rate = RANDOM_NEWS_RATE
 
@@ -41,7 +41,6 @@ class Environment:
 
         if random_news:
             result = choice_df.iloc[np.random.randint(0, choice_df.shape[0])]
-
         else:
 
             df = choice_df.sort_values(by=["_ts"], ignore_index=True, ascending=False)
