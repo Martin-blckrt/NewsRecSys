@@ -60,8 +60,32 @@ def load_db_history(user_id) -> list:
     return items[0].get("read_history")
 
 
+def sync_history(user_id, hist):
+    client = client_init()
+    database = get_db(client, "newsData")
+    container = get_container(database, "userContainer")
+
+    items = list(container.query_items(
+        query="SELECT * FROM r WHERE r.id=@id",
+        parameters=[
+            {"name": "@id", "value": user_id}
+        ],
+        enable_cross_partition_query=True
+    ))
+
+    read_item = items[0]
+    old_hist = read_item["read_history"]
+    read_item["read_history"] = hist
+
+    response = container.replace_item(item=read_item, body=read_item)
+
+    print('Replaced Item\'s Id is {0}, old history={1}, new history={2}'.format(response['id'], old_hist,
+                                                                                response['read_history']))
+
+
 """
 Little scripts for Azure CosmoDB tests
-ls = load_history("1", False)
-print(ls)
+
+fake_hist = ["12", "6"]
+sync_history(user_id="1", hist=fake_hist)
 """

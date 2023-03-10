@@ -10,10 +10,8 @@ class Model:
         # target update parameter
         self.target_update = TARGET_UPDATE
 
-        # init memory
-        self.memory = ReplayMemory(MEMORY_SIZE)
-
         # None because we wait for 'login_user' method
+        self.memory = None
         self.env = None
         self.agent = None
         self.policy_net = None
@@ -29,28 +27,42 @@ class Model:
         self.reward_cum_sum = 0
 
     def login_user(self, user_id: str, local: bool = True):
-        print("User ID is:", user_id)
 
-        """create env, agent & networks"""
-        self.env = Environment(user_id=user_id, local=local)
+        if user_id is None:
+            print("User is None !")
+            raise TypeError
+        else:
+            print("User ID is:", user_id)
 
-        self.agent = Agent(self.env.get_action_space())
+        # does not reset vars if user is the same
+        if self.user_id != user_id:
+            self.user_id = user_id
 
-        self.policy_net = self.agent.policy_net
-        self.target_net = DQN().to(device)  # neural network here
-        self.target_net.load_state_dict(self.policy_net.state_dict())
-        self.target_net.eval()
+            """create env, agent, memory & networks"""
+            self.memory = ReplayMemory(MEMORY_SIZE)
+            self.env = Environment(user_id=user_id, local=local)
 
-        self.optimizer = optim.RMSprop(self.policy_net.parameters())
+            self.agent = Agent(self.env.get_action_space())
 
-    def recommend_news(self, user_id: str) -> list:
-        print("User ID is:", user_id)
+            self.policy_net = self.agent.policy_net
+            self.target_net = DQN().to(device)  # neural network here
+            self.target_net.load_state_dict(self.policy_net.state_dict())
+            self.target_net.eval()
 
-        self.user_id = user_id
-        self.state = self.env.get_state(user_id)
+            self.optimizer = optim.RMSprop(self.policy_net.parameters())
+
+            self.iter_counter = 0
+            self.reward_cum_sum = 0
+
+    def recommend_news(self) -> list:
+
+        self.state = self.env.get_state(self.user_id)
 
         action_info, self.action_tensor = self.agent.act(self.state)
         self.action_news = self.env.get_action_news(action_info)
+
+        # may be temporary but is supposed to send list of news id
+        self.env.update_history(self.action_news['id'])
 
         return self.action_news
 

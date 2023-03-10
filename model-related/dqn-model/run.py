@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from uvicorn import run
-import constants
+from constants import HOST, PORT
 
 from rl_model import Model
 
@@ -36,4 +36,6 @@ def get_user_response(user_response: int) -> None:
 
 
 if __name__ == '__main__':
-    run(app=app, host=constants.HOST, port=constants.PORT)
+    run(app=app, host=HOST, port=PORT)
+    # when app turns off, save history
+    model.env.synchronize_history(model.user_id)

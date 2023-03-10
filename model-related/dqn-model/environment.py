@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import torch
-from data_utils import load_dataset, load_history
+from data_utils import load_dataset, load_history, sync_history
 from constants import RANDOM_NEWS_RATE, STATE_WINDOW, TOP_NEWS
 
 
@@ -33,6 +33,16 @@ class Environment:
     ) -> torch.Tensor:
 
         return
+
+    def update_history(self, recent: (str, list)) -> None:
+        if type(recent) == list:
+            self.history.extend(recent)
+        else:
+            self.history.append(recent)
+
+    def synchronize_history(self, user_id) -> None:
+        sync_history(user_id, self.history)
+
 
     def get_action_news(self, action) -> list:
 
