@@ -8,7 +8,8 @@ import torch.nn.functional as F
 BATCH_SIZE = 2
 MEMORY_SIZE = 10000
 INPUT_SIZE = 376  # state_size
-OUTPUT_SIZE = 18  # action_space_size
+OUTPUT_SIZE = 130379  # action_space_size
+# OUTPUT_SIZE = 18  # action_space_size
 HIDDEN_SIZE = 64
 GAMMA = 0.99
 LEARNING_RATE = 1e-4

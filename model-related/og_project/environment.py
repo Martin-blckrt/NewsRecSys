@@ -7,7 +7,9 @@ from load_dataset import load_news_dataset
 RANDOM_NEWS_RATE = 0.1
 STATE_WINDOW = 3
 TOP_NEWS = 5
-N_CATEGORIES = 18 
+N_CATEGORIES = 18
+
+NEWS_ID = 'News ID'
 
 
 class Environment:
@@ -30,10 +32,7 @@ class Environment:
         return torch.from_numpy(state).float()
 
     def get_action_space(self) -> list:
-        action_space = list()
-        for news_cat in self.categories:
-            action_space.append(news_cat)
-        return action_space
+        return self.news_df[NEWS_ID].tolist()
 
     def get_reward(self, user_input: int) -> torch.Tensor:
         if user_input == 1:

@@ -5,7 +5,6 @@ from load_dataset import load_featured_dataset
 from dqn import ReplayMemory, DQN, optimize_model, device
 from data_model import News
 
-
 TARGET_UPDATE = 5
 LOG_METRIC = 2
 LOG_MODEL = 4
@@ -38,13 +37,15 @@ class Model:
         self.reward_cum_sum = 0
 
     def recommend_news(self, user_id: str) -> News:
-        print("User ID is:", user_id)
+        # print("User ID is:", user_id)
         self.user_id = user_id
         self.state = self.env.get_state(user_id)
-        action_category, _ = self.agent.act(self.state)
-        self.action_news_id = self.env.get_action_news_id(action_category)
-        title, abstract = self.env.get_news_info(self.action_news_id)
-        return News(news_id=self.action_news_id, title=title, abstract=abstract)
+        action_news, _ = self.agent.act(self.state)
+        news = []
+        for action in action_news:
+            title, abstract = self.env.get_news_info(action)
+            news.append(News(news_id=action, title=title, abstract=abstract))
+        return news
 
     def get_user_response(self, user_response: int) -> None:
         print("User Response is:", user_response)

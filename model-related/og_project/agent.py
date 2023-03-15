@@ -7,6 +7,7 @@ EPSILON_START = 0.8
 EPSILON_MIN = 0.02
 EPSILON_DECAY = 10**3
 
+NEWS_NUMBER = 20
 
 class Agent:
     def __init__(self, action_space: list) -> None:
@@ -21,19 +22,27 @@ class Agent:
         self.policy_net = DQN().to(device)
 
     def act(self, state: torch.Tensor) -> str:
-        exploration = np.random.uniform(0, 1) < self.__get_epsilon__()
-        if exploration:
-            action_tensor = torch.zeros([(len(self.action_space))], device=device)
-            random_index = torch.randint(low=0, high=len(self.action_space), size=(1, 1))
-            action_tensor[random_index[0].item()] = 1
-        else:
-            with torch.no_grad():
-                action_tensor = self.policy_net(state)
-        action_index = torch.argmax(action_tensor)
-        action_tensor[action_index] = 1
-        action_category = self.action_space[action_index]
-        self.action_count[action_category] += 1
-        return action_category, action_tensor
+
+        action_news = []
+        random_count = 0
+        for _ in range(NEWS_NUMBER):
+            random_count += (np.random.uniform(0, 1) < self.__get_epsilon__())
+
+        with torch.no_grad():
+            action_tensor = self.policy_net(state)
+
+        random_indices = torch.randint(low=0, high=len(self.action_space), size=(random_count,))
+        for index in random_indices:
+            action_tensor[index] = 1
+
+        action_indices = torch.topk(action_tensor, NEWS_NUMBER).indices
+
+        for index in action_indices:
+            action_n = self.action_space[index]
+            action_news.append(action_n)
+            self.action_count[action_n] += 1
+
+        return action_news, action_tensor
 
     def get_episode(
         self,
