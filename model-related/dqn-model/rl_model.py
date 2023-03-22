@@ -32,7 +32,7 @@ class Model:
             print("User is None !")
             raise TypeError
         else:
-            print("User ID is:", user_id)
+            print("User ID is", user_id)
 
         # does not reset vars if user is the same
         if self.user_id != user_id:

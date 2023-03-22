@@ -36,7 +36,7 @@ def load_db_dataset() -> pd.DataFrame:
 
     item_list = list(container.read_all_items())
 
-    print('Found {0} items'.format(item_list.__len__()))
+    print('Found {0} news'.format(item_list.__len__()))
 
     # convert to pandas dataframe
     return pd.DataFrame.from_records([r for r in item_list])
@@ -55,9 +55,10 @@ def load_db_history(user_id) -> list:
         enable_cross_partition_query=True
     ))
 
-    print('Item queried by Id {0}'.format(items[0].get("id")))
+    history = items[0].get("read_history")
+    print("Found {0} news in user's history".format(len(history)))
 
-    return items[0].get("read_history")
+    return history
 
 
 def sync_history(user_id, hist):
