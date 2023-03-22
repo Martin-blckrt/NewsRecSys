@@ -11,8 +11,7 @@ function createCard(title, image, description, link, type) {
   var card = '';
   
   if (type === 'classic') {
-    card = '<div class="col-md-4">' +
-              '<div class="card card-blog">' +
+    card =    '<div class="card card-blog">' +
                 '<a href="' + link + '" target="_blank">' +
                   '<div class="card-image">' +
                     '<figure style="margin-bottom: 0">' +
@@ -26,24 +25,20 @@ function createCard(title, image, description, link, type) {
                     '<p class="card-description">' + description + '</p>' +
                   '</div>' +
                 '</a>' +
-              '</div>' +
-            '</div>';
+              '</div>';
   } else if (type === 'tweet') {
-    card = '<div class="col-md-4">' +
-              '<blockquote class="twitter-tweet">' +
+    card =    '<blockquote class="twitter-tweet">' +
                 '<a href="' + link + '"></a>' +
-              '</blockquote>' +
-            '</div>';
+              '</blockquote>';
+
   } else if (type === 'reddit') {
-    card = '<div class="col-md-4">' +
-              '<div class="card">' +
+    card =     '<div class="card">' +
                 '<blockquote class="reddit-card" data-card-created=&quot;2023-02-02T16:19:41.554663+00:00&quot;>' +
                   '<a href="' + link + '">' + title + '</a> from ' +
                   '<a href="https://www.reddit.com/r/technology/">technology</a>' +
                 '</blockquote>' +
                 '<script async src="https://embed.redditmedia.com/widgets/platform.js" charset="UTF-8"></script>' +
-              '</div>' +
-            '</div>';
+              '</div>';
   }
   
   return card;
@@ -85,6 +80,13 @@ function showCards() {
     description: '',
     link: 'https://techcrunch.com/2023/01/19/netflix-founder-reed-hastings-steps-down-as-co-ceo/?utm_source=tldrnewsletter&guccounter=1',
     type: 'classic'
+    },
+    {
+    title: '',
+    image: '',
+    description: '',
+    link: 'https://twitter.com/AlphaSignalAI/status/1618026300421332993',
+    type: 'tweet'
     }
   ];
 
@@ -93,23 +95,119 @@ function showCards() {
     var newsItem = newsList[i];
     cardHtml += createCard(newsItem.title, newsItem.image, newsItem.description, newsItem.link, newsItem.type);
 
-    // Add a row div and a new column every 3 cards
-    if (i % 3 === 0) {
-      cardHtml += '</div></div><div class="row"><div class="col-md-4">';
+    if (i === 2 || i === 5 || i === 8) {
+      var id_col = 'col' + (Math.floor((i+1)/3)).toString();
+      var cardContainer = document.getElementById(id_col);
+      cardContainer.innerHTML = cardHtml;
+      cardHtml = '';
+    }
+    if (i+1 === newsList.length) {
+      if (cardHtml !== '') {
+        var id_col = 'col' + (Math.floor((i+1)/3)+1).toString();
+        var cardContainer = document.getElementById(id_col);
+        cardContainer.innerHTML = cardHtml;
+        cardHtml = '';
+      }
     }
   }
-
-  // If the number of cards is not a multiple of 3, close the last row div
-  if (newsList.length % 3 !== 0) {
-    cardHtml += '</div></div>';
-  }
-
-  // Display the cards
-  var cardContainer = document.getElementById('card-container');
-  cardContainer.innerHTML = cardHtml;
+  twttr.widgets.load();
+  setTimeout(addListeners, 3000);
 }
 
+function addListeners() {
+  const cards = document.querySelectorAll('.card, .card-blog, .twitter-tweet');
 
+  cards.forEach(card => {
+    card.addEventListener('click', event => {
+      const clickedCard = event.target.closest('a');
+      const cardTitle = clickedCard.querySelector('.card-caption').textContent;
+      const cardImageSrc = clickedCard.querySelector('.img').getAttribute('src');
+      const cardCategory = clickedCard.querySelector('.category').textContent;
+      const cardDescription = clickedCard.querySelector('.card-description').textContent;
+      
+      console.log(`L'utilisateur a cliqué sur la card suivante :
+      Titre : ${cardTitle}
+      Image : ${cardImageSrc}
+      Catégorie : ${cardCategory}
+      Description : ${cardDescription}`);
+    });
+  });
+
+  const reddits = document.querySelectorAll('.embedly-card');
+  console.log(reddits);
+
+  reddits.forEach(reddit => {
+    reddit.addEventListener('click', event => {
+      const clickedReddit = event.target;
+      console.log(clickedReddit);
+    });
+  });
+
+  const tweets = document.querySelectorAll('.twitter-tweet');
+  const help = document.getElementById('twitter-widget-0');
+  var parentWindow = help.contentWindow.parent;
+
+  parentWindow.addEventListener('message', function(event) {
+    console.log('received smh');
+  })
+
+  help.addEventListener("load", function() {
+    console.log('test');
+    var tweetDoc = help.contentDocument || help.contentWindow.document;
+    var tweetLink = tweetDoc.querySelector(".tweet-link");
+
+    tweetLink.addEventListener("click", function() {
+      help.contentWindow.postMessage("User clicked on tweet!", "*");
+    });
+  });
+
+  /*tweets.forEach(tweet => {
+    var tweetDoc = tweet.contentWindow.document;
+    tweetDoc.addEventListener('click', event => {
+      const clickedTweet = event.target;
+      console.log(clickedTweet);
+    });
+  });
+
+  div_tweets = document.querySelectorAll('.twitterez');
+  div_tweets.forEach(div_tweet => {
+    div_tweet.addEventListener('click', event => {
+      console.log('alors');
+      const clickedTweet = event.target;
+      console.log(clickedTweet);
+    });
+  });*/
+
+
+  /*window.addEventListener('load', function() {
+    // Get the tweet's iframe
+    var tweetIframe = document.querySelector('.twitter-tweet > iframe');
+    //console.log(tweetIframe)
+    // Get the iframe's content window
+    var tweetContentWindow = tweetIframe.contentWindow;
+    // Add a click event listener to the body of the tweet
+    tweetContentWindow.document.body.addEventListener('click', function() {
+      // Handle the click event
+      alert('You clicked the tweet!');
+    });
+  });*/
+
+  /*const tests = document.querySelectorAll('#emb_fmdm35');
+  tests.forEach(reddit => {
+    reddit.addEventListener('click', event => {
+      const clickedReddit = event.target;
+      console.log(clickedReddit);
+    });
+  });*/
+
+  /*cards.forEach(card => {
+    card.addEventListener('click', event => {
+      const clickedCard = event.target;
+      console.log(clickedCard)
+      console.log(`L'utilisateur a cliqué sur la card ${clickedCard.link}`);
+    });
+  });*/
+}
 
 
 /*
