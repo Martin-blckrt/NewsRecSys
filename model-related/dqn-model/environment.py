@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import torch
 from data_utils import load_dataset, load_history, sync_history
-from constants import RANDOM_NEWS_RATE, STATE_WINDOW, TOP_NEWS
+from constants import RANDOM_NEWS_RATE, STATE_WINDOW, TOP_NEWS, INPUT_SIZE
 
 
 class Environment:
@@ -10,32 +10,46 @@ class Environment:
     def __init__(self, *, user_id: str, local: bool = True):
 
         self.news_data = load_dataset(local)
-        self.history = load_history(user_id, local)
         self.news_data.set_index('id', inplace=True)
+
+        self.user_id = user_id
+        self.history = load_history(self.user_id, local)
+
+        self.state_windows = STATE_WINDOW
         self.news_rand_rate = RANDOM_NEWS_RATE
 
-    def get_state(self, user_id: str) -> torch.Tensor:
+    def get_state(self) -> torch.Tensor:
 
-        return
+        last_k_news = self.history[-self.state_windows:]
+        array = np.zeros((self.state_windows, INPUT_SIZE))  # INPUT_SIZE need study
+
+        for index, news_id in enumerate(last_k_news):
+            array[index:] = self.news_data.loc[lambda df: df["id"] == news_id].values[0][1:-1]
+
+        state = np.mean(array, axis=0)
+
+        return torch.from_numpy(state).float()
 
     def get_action_space(self) -> list:
-        """
-        Les actions sont de la forme d'un choix de source
-        :return: toutes les valeurs différentes de source
-        """
 
         unique_sources = pd.unique(self.news_data['source'])
 
         return list(set(unique_sources))
 
-    def update_state(
-            self, current_state: torch.Tensor, action: str, reward: torch.Tensor, user_id: str
-    ) -> torch.Tensor:
+    def update_state(self, current_state: torch.Tensor, reward: torch.Tensor) -> torch.Tensor:
 
-        return
+        if reward[0].item() == 1:
+
+            self.update_history(self.news_data["id"])
+            new_state = self.get_state()
+            return new_state
+
+        elif reward[0].item() == -1:
+            new_state = current_state
+            return new_state
 
     def update_history(self, recent: (str, list)) -> None:
-        if type(recent) == list:
+        if isinstance(recent, list):
             self.history.extend(recent)
         else:
             self.history.append(recent)

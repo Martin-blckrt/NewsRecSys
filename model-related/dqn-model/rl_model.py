@@ -38,7 +38,7 @@ class Model:
         if self.user_id != user_id:
             self.user_id = user_id
 
-            """create env, agent, memory & networks"""
+            """create env, agent, state, memory & networks"""
             self.memory = ReplayMemory(MEMORY_SIZE)
             self.env = Environment(user_id=user_id, local=local)
 
@@ -48,6 +48,8 @@ class Model:
             self.target_net = DQN().to(device)  # neural network here
             self.target_net.load_state_dict(self.policy_net.state_dict())
             self.target_net.eval()
+
+            self.state = None
 
             self.optimizer = optim.RMSprop(self.policy_net.parameters())
 
@@ -73,7 +75,7 @@ class Model:
 
         next_state = self.env.update_state(
             current_state=self.state,
-            action=self.action_news,
+            action=self.action_news,  # change action
             reward=reward,
             user_id=self.user_id,
         )
