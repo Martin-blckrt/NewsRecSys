@@ -42,6 +42,7 @@ if __name__ == '__main__':
 
     model = Model()
     model.login_user("0", local=False)
+    reco = model.recommend_news()
     # do stuff
 
     # when app turns off, save history

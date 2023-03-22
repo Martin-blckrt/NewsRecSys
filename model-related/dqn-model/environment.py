@@ -10,7 +10,6 @@ class Environment:
     def __init__(self, *, user_id: str, local: bool = True):
 
         self.news_data = load_dataset(local)
-        self.news_data.set_index('id', inplace=True)
 
         self.user_id = user_id
         self.history = load_history(self.user_id, local)
@@ -24,7 +23,8 @@ class Environment:
         array = np.zeros((self.state_windows, INPUT_SIZE))  # INPUT_SIZE need study
 
         for index, news_id in enumerate(last_k_news):
-            array[index:] = self.news_data.loc[lambda df: df["id"] == news_id].values[0][1:-1]
+            news = self.news_data.loc[self.news_data["id"] == news_id].values[0][1:]
+            array[index:] = news
 
         state = np.mean(array, axis=0)
 

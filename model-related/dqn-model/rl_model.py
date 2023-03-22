@@ -58,7 +58,7 @@ class Model:
 
     def recommend_news(self) -> list:
 
-        self.state = self.env.get_state(self.user_id)
+        self.state = self.env.get_state()
 
         action_info, self.action_tensor = self.agent.act(self.state)
         self.action_news = self.env.get_action_news(action_info)
