@@ -32,13 +32,13 @@ class Model:
             print("User is None !")
             raise TypeError
         else:
-            print("User ID is:", user_id)
+            print("User ID is", user_id)
 
         # does not reset vars if user is the same
         if self.user_id != user_id:
             self.user_id = user_id
 
-            """create env, agent, memory & networks"""
+            """create env, agent, state, memory & networks"""
             self.memory = ReplayMemory(MEMORY_SIZE)
             self.env = Environment(user_id=user_id, local=local)
 
@@ -49,6 +49,8 @@ class Model:
             self.target_net.load_state_dict(self.policy_net.state_dict())
             self.target_net.eval()
 
+            self.state = None
+
             self.optimizer = optim.RMSprop(self.policy_net.parameters())
 
             self.iter_counter = 0
@@ -56,7 +58,7 @@ class Model:
 
     def recommend_news(self) -> list:
 
-        self.state = self.env.get_state(self.user_id)
+        self.state = self.env.get_state()
 
         action_info, self.action_tensor = self.agent.act(self.state)
         self.action_news = self.env.get_action_news(action_info)
@@ -73,7 +75,7 @@ class Model:
 
         next_state = self.env.update_state(
             current_state=self.state,
-            action=self.action_news,
+            action=self.action_news,  # change action
             reward=reward,
             user_id=self.user_id,
         )

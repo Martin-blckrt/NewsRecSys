@@ -38,7 +38,14 @@ def get_user_response(user_response: str) -> None:
 
 
 if __name__ == '__main__':
-    run(app=app, host=HOST, port=PORT)
+    # run(app=app, host=HOST, port=PORT)
+
+    model = Model()
+    model.login_user("0", local=False)
+    recommended = model.recommend_news()
+    print(recommended)
+    # do stuff
+
     # when app turns off, save history
-    model.env.synchronize_history(model.user_id)
-    print("End of the program, thx bye bye")
+    # model.env.synchronize_history(model.user_id)
+    print("\nEnd of the program, thx bye bye")

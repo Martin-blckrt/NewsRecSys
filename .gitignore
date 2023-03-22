@@ -4,3 +4,4 @@
 node_modules
 
 scraped_news
+__pycache__
