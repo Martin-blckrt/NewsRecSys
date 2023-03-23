@@ -1,10 +1,9 @@
 import pandas as pd
 import numpy as np
 import torch
-from sklearn.preprocessing import LabelEncoder
 
 from data_utils import load_dataset, load_history, sync_history
-from constants import RANDOM_NEWS_RATE, STATE_WINDOW, TOP_NEWS, INPUT_SIZE
+from constants import RANDOM_NEWS_RATE, STATE_WINDOW
 
 
 class Environment:
@@ -13,6 +12,12 @@ class Environment:
 
         self.news_df = load_dataset(local)
 
+        self.data_df = pd.get_dummies(self.news_df, columns=["source"])
+        cols = list(self.news_df.columns)
+        cols.remove("url")
+        cols.remove("source")
+        self.data_df = self.data_df.drop(cols, axis=1)
+
         self.user_id = user_id
         self.history = load_history(self.user_id, local)
 
@@ -20,35 +25,34 @@ class Environment:
 
         self.state_windows = STATE_WINDOW
         self.news_rand_rate = RANDOM_NEWS_RATE
+        self.INPUT_SIZE = len(self.data_df.columns) - 2
+        self.OUTPUT_SIZE = len(self.news_df)
+
+    def get_input_size(self):
+        return self.INPUT_SIZE
+
+    def get_output_size(self):
+        return self.OUTPUT_SIZE
 
     def get_state(self) -> torch.Tensor:
 
         last_k_news = self.history[-self.state_windows:]
-        array = np.zeros((self.state_windows, INPUT_SIZE))  # INPUT_SIZE need study
+        array = np.zeros((self.state_windows, self.INPUT_SIZE))
 
-        for index, news_id in enumerate(last_k_news):
-            news = self.news_df.loc[self.news_df["id"] == news_id]
-            news_source = news["source"]
-
-            code = self.label_encoder.transform(news_source)
-            array[index, code] += 1
+        for index, news_url in enumerate(last_k_news):
+            values = self.data_df.loc[lambda df: df["url"] == news_url].values[0][1:-1]
+            array[index] = values
 
         state = np.mean(array, axis=0)
 
         return torch.from_numpy(state).float()
 
     def get_action_space(self) -> list:
-
-        unique_sources = list(pd.unique(self.news_df['source']))
-        self.label_encoder = LabelEncoder().fit(unique_sources)
-
-        return unique_sources
+        return list(pd.unique(self.news_df["url"]))
 
     def update_state(self, current_state: torch.Tensor, reward: torch.Tensor) -> torch.Tensor:
 
         if reward[0].item() == 1:
-
-            self.update_history(self.news_df["id"])
             new_state = self.get_state()
             return new_state
 
@@ -65,29 +69,11 @@ class Environment:
     def synchronize_history(self, user_id) -> None:
         sync_history(user_id, self.history)
 
-    def get_action_news(self, action) -> list:
+    def get_action_news(self, action_list: list) -> pd.DataFrame:
 
-        random_news = np.random.uniform(0, 1) < self.news_rand_rate
-        choice_df = self.news_df.loc[(self.news_df['source'] == action)]
-
-        if random_news:
-            result = choice_df.iloc[np.random.randint(0, choice_df.shape[0])]
-        else:
-
-            df = choice_df.sort_values(by=["_ts"], ignore_index=True, ascending=False)
-
-            n_news = min(df.shape[0], TOP_NEWS)
-            result = df.head(n_news)
-
-        return result
+        return self.news_df.loc[self.news_df["url"].isin(action_list)]
 
     def get_reward(self, user_input: str) -> torch.Tensor:
-        # TODO: from user_input (news ID), create the reward
-        # idée ?
-        # +1 si reco dans une source déjà déjà reco avant
-        # +0 ou -1 si reco dans une source pas vues avant
-        # ou alors -1 sur les news PAS cliquée mais nécessite de changer un peu le système
+
         if user_input == 1:
             return torch.tensor([1])
-        elif user_input == -1:
-            return torch.tensor([-1])

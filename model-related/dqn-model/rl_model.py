@@ -1,3 +1,4 @@
+import pandas as pd
 import torch.optim as optim
 from constants import TARGET_UPDATE, MEMORY_SIZE, Episode
 from qlearning import DQN, device, ReplayMemory, optimize_model
@@ -42,10 +43,12 @@ class Model:
             self.memory = ReplayMemory(MEMORY_SIZE)
             self.env = Environment(user_id=user_id, local=local)
 
-            self.agent = Agent(self.env.get_action_space())
+            input_size, output_size = self.env.get_input_size(), self.env.get_output_size()
+
+            self.agent = Agent(self.env.get_action_space(), input_size, output_size)
 
             self.policy_net = self.agent.policy_net
-            self.target_net = DQN().to(device)  # neural network here
+            self.target_net = DQN(input_size, output_size).to(device)  # neural network here
             self.target_net.load_state_dict(self.policy_net.state_dict())
             self.target_net.eval()
 
@@ -56,29 +59,21 @@ class Model:
             self.iter_counter = 0
             self.reward_cum_sum = 0
 
-    def recommend_news(self) -> list:
+    def recommend_news(self) -> pd.DataFrame:
 
         self.state = self.env.get_state()
+        self.action_news, self.action_tensor = self.agent.act(self.state)
 
-        action_info, self.action_tensor = self.agent.act(self.state)
-        self.action_news = self.env.get_action_news(action_info)
-
-        return self.action_news
+        return self.env.get_action_news(self.action_news)
 
     def get_user_response(self, user_response: str) -> None:
         print("User Response is:", user_response)
 
         reward = self.env.get_reward(user_response)
 
-        # may be temporary but is supposed to send news id in the function
         self.env.update_history(user_response)
 
-        next_state = self.env.update_state(
-            current_state=self.state,
-            action=self.action_news,  # change action
-            reward=reward,
-            user_id=self.user_id,
-        )
+        next_state = self.env.update_state(current_state=self.state, reward=reward)
 
         self.memory.push(Episode(self.state, self.action_tensor, next_state, reward))
         optimize_model(self.memory, self.policy_net, self.target_net, self.optimizer)
