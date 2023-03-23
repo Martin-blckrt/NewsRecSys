@@ -4,8 +4,8 @@ import azure.cosmos.cosmos_client as cosmos_client
 def client_init():
     # URI/PRIMARY_KEY in : Azure Cosmos DB Account --> Settings --> Keys
     config = {
-        "endpoint": "https://ytw-cosmos.documents.azure.com:443/",
-        "primarykey": "IXFtnebOUiBI846pbqYjUymPIUDeIcX33zNi3zhlqSRzGIlmKNwGdmGMF7cnHVCMV90N9zSfYbE5ACDbEIffyw=="
+        "endpoint": "https://news-rec-db.documents.azure.com:443/",
+        "primarykey": "TkeewxqZmQf61VqBhsly4OQ0fh1DElNRstDdQNUiwtrFjH8YkZse2L1o8UhOKmENcMLDAFErhExxACDb171Y9A=="
     }
 
     # Create the cosmos client
