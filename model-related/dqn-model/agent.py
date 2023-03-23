@@ -1,12 +1,12 @@
 import numpy as np
 import torch
-from constants import Episode, EPS_START, EPS_END, EPS_DECAY
+from constants import Episode, EPS_START, EPS_END, EPS_DECAY, NEWS_NUMBER
 from qlearning import DQN, device
 
 
 class Agent:
 
-    def __init__(self, action_space: list) -> None:
+    def __init__(self, action_space: list, input_size: int, output_size: int) -> None:
         self.epsilon_start = EPS_START
         self.epsilon_min = EPS_END
         self.epsilon_decay = EPS_DECAY
@@ -17,26 +17,30 @@ class Agent:
         self.action_count = {tup: 0 for tup in self.action_space}
 
         self.state, self.action, self.reward, self.next_state = None, None, None, None
-        self.policy_net = DQN().to(device)
+        self.policy_net = DQN(input_size, output_size).to(device)
 
-    def act(self, state: torch.Tensor):
-        exploration = np.random.uniform(0, 1) < self.__get_epsilon__()
+    def act(self, state: torch.Tensor) -> tuple:
 
-        if exploration:
-            action_tensor = torch.zeros([(len(self.action_space))], device=device)
-            random_index = torch.randint(low=0, high=len(self.action_space), size=(1, 1))
-            action_tensor[random_index[0].item()] = 1
-        else:
-            with torch.no_grad():
-                action_tensor = self.policy_net(state)
+        action_news = []
+        random_count = 0
+        for _ in range(NEWS_NUMBER):
+            random_count += (np.random.uniform(0, 1) < self.__get_epsilon__())
 
-        action_index = torch.argmax(action_tensor)
-        action_tensor[action_index] = 1
+        with torch.no_grad():
+            action_tensor = self.policy_net(state)
 
-        action_category = self.action_space[action_index]
-        self.action_count[action_category] += 1
+        random_indices = torch.randint(low=0, high=len(self.action_space), size=(random_count,))
+        for index in random_indices:
+            action_tensor[index] = 1
 
-        return action_category, action_tensor
+        action_indices = torch.topk(action_tensor, NEWS_NUMBER).indices
+
+        for index in action_indices:
+            action_n = self.action_space[index]
+            action_news.append(action_n)
+            self.action_count[action_n] += 1
+
+        return action_news, action_tensor
 
     def get_episode(
             self,
