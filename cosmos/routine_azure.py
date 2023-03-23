@@ -11,7 +11,6 @@ from azure.cosmos import exceptions, PartitionKey
 from azure.cosmos.exceptions import CosmosResourceExistsError
 import requests
 import datetime
-from datetime import timedelta
 import pandas as pd
 import tweepy as tw
 from newsapi import NewsApiClient
@@ -44,7 +43,7 @@ def get_data_from_search(client, tweets_data, KEYWORDS, bool_acc):
     if tweets_data is not None and len(tweets_data) > 0:
 
         res = []
-        
+
         for tweet in tweets_data:
             # Clean the text
             text = tweet.text
@@ -74,6 +73,7 @@ def get_data_from_search(client, tweets_data, KEYWORDS, bool_acc):
         return res
 
     return None
+
 
 def reddit():
     CLIENT_ID = '6diVRhNTByDRS0H1aoWkiw'
@@ -229,7 +229,6 @@ def twitter():
     choice = False
 
     for i, query in enumerate(queries):
-
         choice = True if i == 1 else False
 
         # Search for tweets
@@ -278,8 +277,8 @@ def init():
 
     # URI/PRIMARY_KEY in : Azure Cosmos DB Account --> Settings --> Keys
     config = {
-        "endpoint": "https://ytw-cosmos.documents.azure.com:443/",
-        "primarykey": "IXFtnebOUiBI846pbqYjUymPIUDeIcX33zNi3zhlqSRzGIlmKNwGdmGMF7cnHVCMV90N9zSfYbE5ACDbEIffyw=="
+        "endpoint": "https://news-rec-db.documents.azure.com:443/",
+        "primarykey": "TkeewxqZmQf61VqBhsly4OQ0fh1DElNRstDdQNUiwtrFjH8YkZse2L1o8UhOKmENcMLDAFErhExxACDb171Y9A=="
     }
 
     # Create the cosmos client
@@ -344,7 +343,7 @@ def getdata():
         lambda x: datetime.datetime.strptime(x.replace('T', ' ').replace('Z', ''), '%Y-%m-%d %H:%M:%S'))
 
     df = pd.merge(merged_social, merged_news, on=['title', 'url', 'time', 'description', 'author', 'source'],
-                    how='outer')
+                  how='outer')
 
     df['time'] = df['time'].astype(str)
     df = df.reset_index()
