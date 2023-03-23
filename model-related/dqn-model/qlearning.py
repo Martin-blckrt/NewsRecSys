@@ -34,11 +34,11 @@ class ReplayMemory(object):
 
 
 class DQN(nn.Module):
-    def __init__(self) -> None:
+    def __init__(self, input_size: int, output_size: int) -> None:
         super(DQN, self).__init__()
-        self.fc1 = nn.Linear(INPUT_SIZE, HIDDEN_SIZE)
+        self.fc1 = nn.Linear(input_size, HIDDEN_SIZE)
         self.fc2 = nn.Linear(HIDDEN_SIZE, HIDDEN_SIZE)
-        self.fc3 = nn.Linear(HIDDEN_SIZE, OUTPUT_SIZE)
+        self.fc3 = nn.Linear(HIDDEN_SIZE, output_size)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = x.to(device)
