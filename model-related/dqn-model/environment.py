@@ -73,5 +73,7 @@ class Environment:
 
     def get_reward(self, user_input: str) -> torch.Tensor:
 
-        if user_input == 1:
+        if user_input in self.history:
             return torch.tensor([1])
+        else:
+            return torch.tensor([0])

@@ -43,12 +43,16 @@ if __name__ == '__main__':
     model = Model()
     model.login_user("0", local=False)
     recommended = model.recommend_news()
+    """
+    print(recommended.iloc[0]["url"])
 
-    # print(recommended.iloc[0])
+    rl = input() or rl = recommended.iloc[0]["url"]
+    model.get_user_response(rl)
+    print("New news")
+    recommended = model.recommend_news()
 
-    # rl = input()
-    # model.get_user_response(rl)
-    # model.recommend_news()
+    print(recommended.iloc[0]["url"])
+    """
     # when app turns off, save history
     # model.env.synchronize_history(model.user_id)
     print("\nEnd of the program, thx bye bye")
