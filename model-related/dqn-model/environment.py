@@ -74,5 +74,9 @@ class Environment:
 
         return self.news_df.loc[self.news_df["url"].isin(action_list)]
 
-    def get_reward(self) -> torch.Tensor:
-        return torch.tensor([1])
+    def get_reward(self, user_input: str) -> torch.Tensor:
+
+        if user_input in self.history:
+            return torch.tensor([0])
+        else:
+            return torch.tensor([1])
