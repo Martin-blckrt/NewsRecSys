@@ -27,7 +27,7 @@ class Model:
         self.iter_counter = 0
         self.reward_cum_sum = 0
 
-    def login_user(self, user_id: str, local: bool = True):
+    def login_user(self, user_id: str, local: bool = False):
 
         if user_id is None:
             print("User is None !")

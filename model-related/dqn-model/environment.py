@@ -8,7 +8,7 @@ from constants import RANDOM_NEWS_RATE, STATE_WINDOW
 
 class Environment:
 
-    def __init__(self, *, user_id: str, local: bool = True):
+    def __init__(self, *, user_id: str, local: bool = False):
 
         self.news_df = load_dataset(local)
 
@@ -20,8 +20,6 @@ class Environment:
 
         self.user_id = user_id
         self.history = load_history(self.user_id, local)
-
-        self.label_encoder = None
 
         self.state_windows = STATE_WINDOW
         self.news_rand_rate = RANDOM_NEWS_RATE
