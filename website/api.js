@@ -1,18 +1,92 @@
+function splitList(list) {
+  const size = list.length;
+  const quotient = Math.floor(size / 3);
+  const remainder = size % 3;
+
+  let firstPart = [],
+      secondPart = [],
+      thirdPart = [];
+
+  if (remainder === 0) {
+    firstPart = list.slice(0, quotient);
+    secondPart = list.slice(quotient, quotient * 2);
+    thirdPart = list.slice(quotient * 2);
+  } else if (remainder === 1) {
+    firstPart = list.slice(0, quotient + 1);
+    secondPart = list.slice(quotient + 1, quotient * 2 + 1);
+    thirdPart = list.slice(quotient * 2 + 1);
+  } else {
+    firstPart = list.slice(0, quotient + 1);
+    secondPart = list.slice(quotient + 1, quotient * 2 + 2);
+    thirdPart = list.slice(quotient * 2 + 2);
+  }
+
+  return [firstPart, secondPart, thirdPart];
+}
+
+function shuffleList(list) {
+  list.sort(() => Math.random() - 0.5);
+  return list;
+}
+
+window.addEventListener("blur", () => {
+  setTimeout(() => {
+    if (document.activeElement.tagName === "IFRAME") {
+      if (document.activeElement.title === 'Twitter Tweet') {
+        console.log(document.activeElement.parentElement.parentElement.id);
+      } else {
+        console.log(document.activeElement.parentElement.parentElement.parentElement.id);
+      }
+      window.focus();
+    }
+  });
+});
+
 var form = document.getElementById("my-form");
-var button = document.getElementById("submit-id");
-//button.addEventListener("click", showCards);
+document.getElementById("submit-id").onclick = submit_id;
 
 form.addEventListener("submit", function(event) {
   event.preventDefault(); // prevent the page from reloading
   showCards(); // call the showCards function to display the cards
 });
 
+function submit_id(event) {
+  let user_id = document.getElementById("user-id").value;
+  recommend_news(user_id);
+  event.preventDefault();
+}
+
+function recommend_news(user_id) {
+  let api_url = `http://127.0.0.1:8000/recommend-news/${user_id}`; // localhost-http
+  // fetch url and make a get request
+  fetch(api_url)
+    .then(response => response.json())
+    .then(data => {
+      // data will contain the recommended news as an array of objects
+      // you can access the news items like this:
+      data = JSON.parse(data);
+      console.log(data);
+
+      for (var i = 0; i < data.length; i++) {
+        var newsItem = data[i];
+        if (newsItem.source !== 'twitter') {
+          if (newsItem.source !== 'Futurology' && newsItem.source !== 'Technology' && newsItem.source !== 'Realtech' && newsItem.source !== 'Tech') {
+            data[i].source = 'classic';
+          } else {
+            data[i].source = 'reddit';
+          }
+        }
+        }
+      showCards(data);
+    })
+    .catch(error => console.error(error));
+}
+
 function createCard(title, image, description, link, type) {
   var card = '';
   
   if (type === 'classic') {
-    card = '<div class="col-md-4">' +
-              '<div class="card card-blog">' +
+    card =    '<div class="card card-blog">' +
                 '<a href="' + link + '" target="_blank">' +
                   '<div class="card-image">' +
                     '<figure style="margin-bottom: 0">' +
@@ -26,130 +100,69 @@ function createCard(title, image, description, link, type) {
                     '<p class="card-description">' + description + '</p>' +
                   '</div>' +
                 '</a>' +
-              '</div>' +
-            '</div>';
-  } else if (type === 'tweet') {
-    card = '<div class="col-md-4">' +
-              '<blockquote class="twitter-tweet">' +
-                '<a href="' + link + '"></a>' +
-              '</blockquote>' +
-            '</div>';
+              '</div>';
+  } else if (type === 'twitter') {
+    const id = link.split("/status/")[1];
+    link = 'https://twitter.com/x/status/' + id;
+    card =    '<div class="card" id=' + link +'>' +
+                  '<blockquote class="twitter-tweet">' +
+                    '<a href="' + link + '"></a>' +
+                  '</blockquote>' +
+              '</div>';
+
   } else if (type === 'reddit') {
-    card = '<div class="col-md-4">' +
-              '<div class="card">' +
-                '<blockquote class="reddit-card" data-card-created=&quot;2023-02-02T16:19:41.554663+00:00&quot;>' +
-                  '<a href="' + link + '">' + title + '</a> from ' +
-                  '<a href="https://www.reddit.com/r/technology/">technology</a>' +
-                '</blockquote>' +
-                '<script async src="https://embed.redditmedia.com/widgets/platform.js" charset="UTF-8"></script>' +
-              '</div>' +
-            '</div>';
+    link = link.concat('embed');
+    card = `
+    <div class="card" id="${link}">
+      <blockquote class="reddit-card">
+        <a href="${link}"></a> from 
+        <a href="https://www.reddit.com/">Reddit</a>
+      </blockquote>
+      <script async src="https://embed.redditmedia.com/widgets/platform.js" charset="UTF-8"></script>
+    </div>
+  `;
   }
   
   return card;
 }
 
-function showCards() {
-  var newsList = [
-    {
-      title: 'The Era of Happy Tech Workers Is Over',
-      image: 'https://source.unsplash.com/user/xteemu/800x600',
-      description: 'The perks of working at a Silicon Valley firm are disappearing and unlikely to return. The current macroeconomic environment is forcing tech companies to optimize more for profit than growth.',
-      link: 'https://archive.ph/xPIf3',
-      type: 'classic'
-    },
-    {
-      title: '',
-      image: '',
-      description: '',
-      link: 'https://twitter.com/x/status/1635694897612173312',
-      type: 'tweet'
-    },
-    {
-      title: 'ChatGPT may be the fastest-growing consumer app in internet history, reaching 100 million users in just over 2 months, UBS report says',
-      image: '',
-      description: '',
-      link: 'https://www.reddit.com/r/technology/comments/10ro9gi/chatgpt_may_be_the_fastestgrowing_consumer_app_in/?ref_source=embed&amp;ref=share',
-      type: 'reddit'
-    },
-    {
-      title: 'Next up for CRISPR: Gene editing for the masses?',
-      image: 'https://source.unsplash.com/user/austindistel/800x600',
-      description: 'Advances in CRISPR technology may soon make it possible for a vaccine that provides lifelong protection against heart disease. New forms of the technology, like prime editing, are broadening the scope of gene-editing treatments.',
-      link: 'https://archive.ph/an4EL',
-      type: 'classic'
-    },
-    {
-    title: 'Netflix founder Reed Hastings steps down as co-CEO',
-    image: 'http://adamthemes.com/demo/code/cards/images/blog01.jpeg',
-    description: '',
-    link: 'https://techcrunch.com/2023/01/19/netflix-founder-reed-hastings-steps-down-as-co-ceo/?utm_source=tldrnewsletter&guccounter=1',
-    type: 'classic'
-    }
-  ];
 
-  var cardHtml = '';
-  for (var i = 0; i < newsList.length; i++) {
-    var newsItem = newsList[i];
-    cardHtml += createCard(newsItem.title, newsItem.image, newsItem.description, newsItem.link, newsItem.type);
+function showCards(news_model) {
+  news_model = shuffleList(news_model);
+  lists = splitList(news_model);
+  console.log(lists);
+  id_cols = ['1','2','3'];
 
-    // Add a row div and a new column every 3 cards
-    if (i % 3 === 0) {
-      cardHtml += '</div></div><div class="row"><div class="col-md-4">';
+  for (let i = 0; i < id_cols.length; i++) {
+    sub_news = lists[i];
+    cardHtml = '';
+
+    for (let j = 0; j < sub_news.length; j++) {
+      var newsItem = sub_news[j];
+      cardHtml += createCard(newsItem.title, newsItem.image, newsItem.description, newsItem.url, newsItem.source);
     }
+    var id_col = 'col' + id_cols[i];
+    var cardContainer = document.getElementById(id_col);
+    cardContainer.innerHTML = cardHtml;
   }
 
-  // If the number of cards is not a multiple of 3, close the last row div
-  if (newsList.length % 3 !== 0) {
-    cardHtml += '</div></div>';
-  }
-
-  // Display the cards
-  var cardContainer = document.getElementById('card-container');
-  cardContainer.innerHTML = cardHtml;
+  twttr.widgets.load();
+  addListeners();
 }
 
+function addListeners() {
+  const cards = document.querySelectorAll('.card, .card-blog');
 
-
-
-/*
-function showCards() {
-  // get the container element
-  var container = document.getElementById("card-container");
-  container.innerHTML = "";
-
-  // create a list of card data, such as an array of objects
-  var cardData = [
-    { title: "Card 1", body: "This is the body of card 1" },
-    { title: "Card 2", body: "This is the body of card 2" },
-    { title: "Card 3", body: "This is the body of card 3" }
-  ];
-
-  // loop through the card data and generate a card for each item
-  for (var i = 0; i < cardData.length; i++) {
-    // create a new card element
-    var card = document.createElement("div");
-    card.classList.add("card");
-
-    // create the card header
-    var header = document.createElement("div");
-    header.classList.add("card-header");
-    header.innerText = cardData[i].title;
-    card.appendChild(header);
-
-    // create the card body
-    var body = document.createElement("div");
-    body.classList.add("card-body");
-    body.innerText = cardData[i].body;
-    card.appendChild(body);
-
-    // add the card to the container element
-    if (container) {
-      container.appendChild(card);
-    } else {
-      console.error("Container element not found");
-    }
-  }
-}*/
+  cards.forEach(card => {
+    card.addEventListener('click', event => {
+      const clickedCard = event.target.closest('a');
+      const cardTitle = clickedCard.querySelector('.card-caption').textContent;
+      console.log(`L'utilisateur a cliqué sur la card suivante :
+      Titre : ${cardTitle}
+      URL: ${clickedCard}`);
+    });
+  });
+  twttr.widgets.load();
+}
 
 

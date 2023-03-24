@@ -8,7 +8,7 @@ from constants import RANDOM_NEWS_RATE, STATE_WINDOW
 
 class Environment:
 
-    def __init__(self, *, user_id: str, local: bool = True):
+    def __init__(self, *, user_id: str, local: bool = False):
 
         self.news_df = load_dataset(local)
 
@@ -20,8 +20,6 @@ class Environment:
 
         self.user_id = user_id
         self.history = load_history(self.user_id, local)
-
-        self.label_encoder = None
 
         self.state_windows = STATE_WINDOW
         self.news_rand_rate = RANDOM_NEWS_RATE
@@ -40,8 +38,11 @@ class Environment:
         array = np.zeros((self.state_windows, self.INPUT_SIZE))
 
         for index, news_url in enumerate(last_k_news):
-            values = self.data_df.loc[lambda df: df["url"] == news_url].values[0][1:-1]
-            array[index] = values
+            matching_df = self.data_df.loc[lambda df: df["url"] == news_url]
+
+            if not matching_df.empty:
+                df_values = matching_df.values[0][1:-1]
+                array[index] = df_values
 
         state = np.mean(array, axis=0)
 
@@ -56,7 +57,7 @@ class Environment:
             new_state = self.get_state()
             return new_state
 
-        elif reward[0].item() == -1:
+        elif reward[0].item() == 0:
             new_state = current_state
             return new_state
 
@@ -75,5 +76,7 @@ class Environment:
 
     def get_reward(self, user_input: str) -> torch.Tensor:
 
-        if user_input == 1:
+        if user_input in self.history:
+            return torch.tensor([0])
+        else:
             return torch.tensor([1])
