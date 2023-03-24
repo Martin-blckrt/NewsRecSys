@@ -57,7 +57,7 @@ class Environment:
             new_state = self.get_state()
             return new_state
 
-        elif reward[0].item() == -1:
+        elif reward[0].item() == 0:
             new_state = current_state
             return new_state
 
