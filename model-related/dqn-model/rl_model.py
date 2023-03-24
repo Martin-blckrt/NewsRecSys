@@ -27,7 +27,7 @@ class Model:
         self.iter_counter = 0
         self.reward_cum_sum = 0
 
-    def login_user(self, user_id: str, local: bool = True):
+    def login_user(self, user_id: str, local: bool = False):
 
         if user_id is None:
             print("User is None !")
@@ -75,7 +75,7 @@ class Model:
 
         next_state = self.env.update_state(current_state=self.state, reward=reward)
 
-        self.memory.push(Episode(self.state, self.action_tensor, next_state, reward))
+        self.memory.push(self.state, self.action_tensor, next_state, reward)
         optimize_model(self.memory, self.policy_net, self.target_net, self.optimizer)
 
         if self.iter_counter % self.target_update == 0:
