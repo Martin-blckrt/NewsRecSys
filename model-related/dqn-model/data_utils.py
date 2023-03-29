@@ -15,18 +15,18 @@ def load_dataset(local: bool) -> pd.DataFrame:
         return load_db_dataset()
 
 
-def load_history(user_id: str, local: bool) -> list:
+def load_history(user_id: str, local: bool) -> tuple:
     if local:
         user_df = pd.read_csv("data/file.csv", header=None)
-        user_df.columns = ['id', 'read_history']
+        user_df.columns = ['id', 'read_history']  # state history ?
         user_df.drop_duplicates(subset=["id"], keep="last", inplace=True, ignore_index=True)
 
         hist = user_df.loc[user_df['id'] == user_id]
+        st_hist = None
     else:
-        hist = load_db_history(user_id)
+        hist, st_hist = load_db_history(user_id)
 
-    # TODO: get (source, tag) kind of infos from news id
-    return hist
+    return hist, st_hist
 
 
 def load_db_dataset() -> pd.DataFrame:
@@ -42,7 +42,7 @@ def load_db_dataset() -> pd.DataFrame:
     return pd.DataFrame.from_records([r for r in item_list])
 
 
-def load_db_history(user_id) -> list:
+def load_db_history(user_id) -> tuple:
     client = client_init()
     database = get_db(client, "newsData")
     container = get_container(database, "userContainer")
@@ -56,12 +56,14 @@ def load_db_history(user_id) -> list:
     ))
 
     history = items[0].get("read_history")
+    state_history = items[0].get("state_history")
+
     print("Found {0} news in user's history".format(len(history)))
 
-    return history
+    return history, state_history
 
 
-def sync_history(user_id, hist):
+def sync_history(user_id, hist, st_hist):
     client = client_init()
     database = get_db(client, "newsData")
     container = get_container(database, "userContainer")
@@ -77,6 +79,7 @@ def sync_history(user_id, hist):
     read_item = items[0]
     old_hist = read_item["read_history"]
     read_item["read_history"] = hist
+    read_item["state_history"] = st_hist
 
     response = container.replace_item(item=read_item, body=read_item)
 
