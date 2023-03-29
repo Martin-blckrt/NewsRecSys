@@ -24,10 +24,12 @@ class Environment:
         self.user_id = user_id
         self.history, self.state_history = load_history(self.user_id, local)
 
+        self.news_df = self.news_df[~self.news_df['url'].isin(self.history)]
+
         self.state_windows = STATE_WINDOW
         self.news_rand_rate = RANDOM_NEWS_RATE
 
-        self.INPUT_SIZE = len(self.data_df.columns) - len(remov)
+        self.INPUT_SIZE = len(self.data_df.columns) - len(remov) + 1
         self.OUTPUT_SIZE = len(self.news_df)
 
     def get_input_size(self):
@@ -39,18 +41,14 @@ class Environment:
     def get_state(self) -> torch.Tensor:
 
         last_k_news = self.history[-self.state_windows:]
-        last_k_state = self.state_history[-self.state_windows:]
+        last_k_states = self.state_history[-self.state_windows:]
 
         array = np.zeros((self.state_windows, self.INPUT_SIZE))
 
-        for index, (news_url, h_state) in enumerate(zip(last_k_news, last_k_state)):
-            matching_df = self.data_df.loc[lambda df: df["url"] == news_url]
-
-            if matching_df.empty:
-                if h_state and news_url == h_state[0]:
-                    array[index] = h_state[1:-1]
-            else:
-                array[index] = matching_df.values[0][1:-1]
+        for index, state_list in enumerate(last_k_states):
+            for state_val in state_list:
+                for i, name in enumerate(self.data_df.columns[1:]):
+                    array[index][i] = int(name == state_val)
 
         state = np.mean(array, axis=0)
 
@@ -73,7 +71,10 @@ class Environment:
         self.history.append(recent)
 
         matching_df = self.data_df.loc[lambda df: df["url"] == recent]
-        self.state_history.append(matching_df.values[0].tolist())
+
+        one_col = matching_df.apply(lambda row: row[row == 1], axis=1)
+
+        self.state_history.append(list(one_col.columns))
 
     def synchronize_history(self, user_id) -> None:
         sync_history(user_id, self.history, self.state_history)
