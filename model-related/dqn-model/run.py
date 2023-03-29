@@ -43,8 +43,23 @@ def get_user_response(user_response: str) -> None:
     model.get_user_response(user_response)
 
 
+"""
+Scénar Thomas
+
+model = Model()
+model.login_user("0", local=False)
+recommended = model.recommend_news()
+user_choice = recommended.iloc[0]['url']
+model.get_user_response(user_choice)
+# go again
+model.recommend_news()
+
+"""
+
 if __name__ == '__main__':
     run(app=app, host=HOST, port=PORT)
+
+    # when app turns off, save history
     model.env.synchronize_history(model.user_id)
 
     #model = Model()
@@ -54,11 +69,5 @@ if __name__ == '__main__':
 
     # Convert the dataframe to a JSON object
     #json_obj = df.to_json(orient='records')
-    #print(recommended.iloc[0])
 
-    # rl = input()
-    # model.get_user_response(rl)
-    # model.recommend_news()
-    # when app turns off, save history
-    #
     print("\nEnd of the program, thx bye bye")
