@@ -19,18 +19,37 @@ MEMORY_SIZE = 1000
 # TAU is the update rate of the target network
 # LR is the learning rate of the AdamW optimizer
 
-BATCH_SIZE = 128
+"""
+Below, num_episodes is set to 600 if a GPU is available, otherwise 50 episodes are scheduled so 
+training does not take too long. However, 50 episodes is insufficient for to observe good performance on cartpole. 
+You should see the model constantly achieve 500 steps within 600 training episodes. 
+Training RL agents can be a noisy process, so restarting training can produce better results 
+if convergence is not observed.
+"""
+
+BATCH_SIZE = 3
+
+""" https://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html
+The discount, GAMMA, should be a constant between 0 and 1 that ensures the sum converges. 
+A lower GAMMA makes rewards from the uncertain far future less important for our agent than the ones in the near future 
+that it can be fairly confident about. It also encourages agents to collect reward closer in time than equivalent 
+rewards that are temporally far away in the future.
+"""
 GAMMA = 0.99
 EPS_START = 0.3
 EPS_END = 0.01
 EPS_DECAY = 500
+"""
+The target network is updated at every step with a soft update controlled by the hyperparameter TAU, 
+which was previously defined.
+"""
 TAU = 0.005
 LR = 1e-4
 
 HIDDEN_SIZE = 64
 
 # Model stuff
-TARGET_UPDATE = 5
+TARGET_UPDATE = 3
 
 # Env stuff
 RANDOM_NEWS_RATE = 0.1

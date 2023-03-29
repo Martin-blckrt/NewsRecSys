@@ -24,6 +24,8 @@ class Model:
         self.action_tensor = None
         self.action_news = None
 
+        self.output_size = None
+
         self.iter_counter = 0
         self.reward_cum_sum = 0
 
@@ -43,12 +45,12 @@ class Model:
             self.memory = ReplayMemory(MEMORY_SIZE)
             self.env = Environment(user_id=user_id, local=local)
 
-            input_size, output_size = self.env.get_input_size(), self.env.get_output_size()
+            input_size, self.output_size = self.env.get_input_size(), self.env.get_output_size()
 
-            self.agent = Agent(self.env.get_action_space(), input_size, output_size)
+            self.agent = Agent(self.env.get_action_space(), input_size, self.output_size)
 
             self.policy_net = self.agent.policy_net
-            self.target_net = DQN(input_size, output_size).to(device)  # neural network here
+            self.target_net = DQN(input_size, self.output_size).to(device)  # neural network here
             self.target_net.load_state_dict(self.policy_net.state_dict())
             self.target_net.eval()
 
@@ -76,7 +78,7 @@ class Model:
         next_state = self.env.update_state(current_state=self.state, reward=reward)
 
         self.memory.push(self.state, self.action_tensor, next_state, reward)
-        optimize_model(self.memory, self.policy_net, self.target_net, self.optimizer)
+        optimize_model(self.memory, self.policy_net, self.target_net, self.optimizer, self.output_size)
 
         if self.iter_counter % self.target_update == 0:
             self.target_net.load_state_dict(self.policy_net.state_dict())

@@ -58,11 +58,10 @@ class Environment:
         return list(pd.unique(self.news_df["url"]))
 
     def update_state(self, current_state: torch.Tensor, reward: torch.Tensor) -> torch.Tensor:
-        if reward[0].item() == 1:
+        if reward[0].item() > 0:
             new_state = self.get_state()
             return new_state
-
-        elif reward[0].item() == 0:
+        else:
             new_state = current_state
             return new_state
 
@@ -84,6 +83,6 @@ class Environment:
 
     def get_reward(self, user_input: str) -> torch.Tensor:
         if user_input in self.history:
-            return torch.tensor([0])
+            return torch.tensor([-1])
         else:
             return torch.tensor([1])

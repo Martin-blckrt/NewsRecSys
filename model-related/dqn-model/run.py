@@ -20,7 +20,6 @@ app.add_middleware(
 
 @app.get('/login/{user_id}')
 def create_model(user_id: str) -> None:
-
     model.login_user(user_id, local=False)
 
 
@@ -39,12 +38,12 @@ def recommend_news(user_id: str):
 
 @app.get('/response/{user_response}')
 def get_user_response(user_response: str) -> None:
-    # for now, user response = id de la news cliquée
+    # for now, user response = id(URL) de la news cliquée
     model.get_user_response(user_response)
 
 
 """
-Scénar Thomas
+Scénar Pipeline A -> Z
 
 model = Model()
 model.login_user("0", local=False)
@@ -55,19 +54,26 @@ model.get_user_response(user_choice)
 model.recommend_news()
 
 """
+"""
+Scénar qualité de recommandation
+
+model = Model()
+model.login_user("0", local=False)
+choices = []
+while True:
+    recommended = model.recommend_news()
+    print(recommended)
+    print("You already choose:", *choices)
+    user = input("Choose ID (nb, not url): ")
+    choices.append(user)
+    url = recommended.loc[recommended['id'] == user]['url'].values[0]
+    model.get_user_response(url)
+"""
 
 if __name__ == '__main__':
     run(app=app, host=HOST, port=PORT)
 
     # when app turns off, save history
     model.env.synchronize_history(model.user_id)
-
-    #model = Model()
-    #model.login_user("0", local=False)
-    #recommended = model.recommend_news()
-    #df = recommended[['source', 'title', 'image', 'description', 'url']]
-
-    # Convert the dataframe to a JSON object
-    #json_obj = df.to_json(orient='records')
 
     print("\nEnd of the program, thx bye bye")

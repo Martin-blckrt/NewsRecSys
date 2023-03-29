@@ -49,16 +49,19 @@ class DQN(nn.Module):
 
 
 def optimize_model(
-        memory: ReplayMemory, policy_net: DQN, target_net: DQN, optimizer: torch.optim
-) -> None:
+        memory: ReplayMemory, policy_net: DQN, target_net: DQN, optimizer: torch.optim, out_size: int) -> None:
+
     if len(memory) < BATCH_SIZE:
         return
+
     episodes = memory.sample(BATCH_SIZE)
     batch = Episode(*zip(*episodes))
+
     state_batch = torch.cat(batch.state).reshape(BATCH_SIZE, -1)
     action_batch = torch.cat(batch.action)
-    reward_batch = torch.cat(batch.reward).reshape(BATCH_SIZE, -1).expand(-1, OUTPUT_SIZE).reshape(-1)
+    reward_batch = torch.cat(batch.reward).reshape(BATCH_SIZE, -1).expand(-1, out_size).reshape(-1)
     next_state_batch = torch.cat(batch.next_state).reshape(BATCH_SIZE, -1)
+
     state_action_values = (
         policy_net(state_batch)
         .gather(1, action_batch.type(torch.int64).unsqueeze(0))
@@ -66,10 +69,15 @@ def optimize_model(
     )
     next_state_values = target_net(next_state_batch).reshape(-1)
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
+
     criterion = nn.SmoothL1Loss()
+
     loss = criterion(state_action_values, expected_state_action_values)
+
     optimizer.zero_grad()
+
     loss.backward()
     for param in policy_net.parameters():
         param.grad.data.clamp_(-1, 1)
+
     optimizer.step()
