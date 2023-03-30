@@ -30,10 +30,8 @@ def create_model(user_id: str) -> None:
 
 @app.get('/recommend-news/{user_id}')
 def recommend_news(user_id: str):
-    model.login_user(user_id, local=False)
-    print("user loggedid")
     # l'user_id n'est plus là car on l'a déjà grâce au login
-    recommended = model.recommend_news()
+    recommended = model.recommend_news(user_id)
     print(recommended)
     df = recommended[['source', 'title', 'image', 'description', 'url']]
     json_obj = df.to_json(orient='records')
@@ -77,24 +75,9 @@ while True:
 """
 
 if __name__ == '__main__':
-    model = Model()
-    model.login_user("0", local=False)
-    choices = []
-    while True:
-        recommended = model.recommend_news()
-        print(recommended)
-        print("You already choose:", *choices)
-        user = input("Choose ID (nb, not url): ")
-
-        if user == '-1':
-            break
-        choices.append(user)
-        url = recommended.loc[recommended['id'] == user]['url'].values[0]
-        model.get_user_response(url)
-
-    # run(app=app, host=HOST, port=PORT)
+    run(app=app, host=HOST, port=PORT)
 
     # when app turns off, save history
-    # model.env.synchronize_history(model.user_id)
+    model.quit()
 
     print("\nEnd of the program, thx bye bye")

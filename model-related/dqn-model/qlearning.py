@@ -26,8 +26,8 @@ class ReplayMemory(object):
     def __len__(self) -> int:
         return len(self.memory)
 
-    def push(self, *args: Episode):
-        self.memory.append(Episode(*args))
+    def push(self, ep: Episode):
+        self.memory.append(ep)
 
     def sample(self, batch_size) -> list:
         return random.sample(self.memory, batch_size)
@@ -47,10 +47,22 @@ class DQN(nn.Module):
         x = F.softmax(self.fc3(x), dim=-1)
         return x
 
+    def load(self, user_id, name):
+        self.load_state_dict(torch.load(f"../user_models/{user_id}_{name}"), strict=False)
+
+    def save(self, user_id, name):
+        model_dict = self.state_dict()
+
+        k_dict = list(model_dict.keys())
+        k_dict = k_dict[2:-2]
+
+        save_dict = dict((k, model_dict[k]) for k in k_dict)
+
+        torch.save(save_dict, f"../user_models/{user_id}_{name}")
+
 
 def optimize_model(
         memory: ReplayMemory, policy_net: DQN, target_net: DQN, optimizer: torch.optim, out_size: int) -> None:
-
     if len(memory) < BATCH_SIZE:
         return
 

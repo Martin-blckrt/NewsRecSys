@@ -16,9 +16,9 @@ class Environment:
         self.history, self.state_history = load_history(self.user_id, local)
 
         self.news_df = load_dataset(local)
+        self.news_df = self.news_df[~self.news_df['url'].isin(self.history)]
 
         self.data_df, nb_removed = self.encode_news_df()
-        # self.news_df = self.news_df[~self.news_df['url'].isin(self.history)]
 
         self.INPUT_SIZE = len(self.data_df.columns) - nb_removed + 1
         self.OUTPUT_SIZE = len(self.news_df)
@@ -35,12 +35,6 @@ class Environment:
             cols_to_remove.remove(c)
 
         data_df = data_df.drop(cols_to_remove, axis=1)
-
-        # creates 'read_by_user' attribute after the last col
-        data_df.insert(len(data_df.columns), "read_by_user", 0)
-
-        # check all read news with a 1
-        data_df.loc[data_df['url'].isin(self.history), 'read_by_user'] = 2
 
         return data_df, len(keep_col)
 
@@ -62,8 +56,6 @@ class Environment:
                 for i, name in enumerate(self.data_df.columns[1:]):
                     array[index][i] = int(name == state_val)
 
-            array[index][-1] = self.data_df.loc[self.data_df["url"] == news_url].values[0][-1]
-
         state = np.mean(array, axis=0)
 
         return torch.from_numpy(state).float()
@@ -83,7 +75,6 @@ class Environment:
 
         self.history.append(recent)
 
-        self.data_df.loc[self.data_df["url"] == recent, 'read_by_user'] = 2
         matching_df = self.data_df.loc[lambda df: df["url"] == recent]
 
         one_col = matching_df.apply(lambda row: row[row == 1], axis=1)
@@ -95,9 +86,3 @@ class Environment:
 
     def get_action_news(self, action_list: list) -> pd.DataFrame:
         return self.news_df.loc[self.news_df["url"].isin(action_list)]
-
-    def get_reward(self, user_input: str) -> torch.Tensor:
-        if user_input in self.history:
-            return torch.tensor([-1])
-        else:
-            return torch.tensor([1])
