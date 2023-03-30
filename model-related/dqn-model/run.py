@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from uvicorn import run
-from constants import HOST, PORT
 
+from constants import HOST, PORT
 from rl_model import Model
 
 app = FastAPI()
@@ -16,6 +17,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+class NewsClick(BaseModel):
+    url: str
 
 
 @app.get('/login/{user_id}')
@@ -36,10 +41,11 @@ def recommend_news(user_id: str):
     return JSONResponse(content=json_obj)
 
 
-@app.get('/response/{user_response}')
-def get_user_response(user_response: str) -> None:
-    # for now, user response = id(URL) de la news cliquée
-    model.get_user_response(user_response)
+@app.post('/response/')
+def get_user_response(news_click: NewsClick):
+    model.get_user_response(news_click.url)
+
+    return JSONResponse(content="ok")
 
 
 """
