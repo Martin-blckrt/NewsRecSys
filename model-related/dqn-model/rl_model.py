@@ -64,8 +64,8 @@ class Model:
     def recommend_news(self) -> pd.DataFrame:
 
         self.state = self.env.get_state()
-        self.action_news, self.action_tensor = self.agent.act(self.state)
-
+        self.action_news, self.action_tensor, temp = self.agent.act(self.state)
+        print(temp)
         return self.env.get_action_news(self.action_news)
 
     def get_user_response(self, user_response: str) -> None:

@@ -34,13 +34,14 @@ class Agent:
             action_tensor[index] = 1
 
         action_indices = torch.topk(action_tensor, NEWS_NUMBER).indices
-
+        temp = []
         for index in action_indices:
+            temp.append(action_tensor[index])
             action_n = self.action_space[index]
             action_news.append(action_n)
             self.action_count[action_n] += 1
 
-        return action_news, action_tensor
+        return action_news, action_tensor, temp
 
     def get_episode(
             self,
