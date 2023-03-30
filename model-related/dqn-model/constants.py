@@ -27,7 +27,7 @@ Training RL agents can be a noisy process, so restarting training can produce be
 if convergence is not observed.
 """
 
-BATCH_SIZE = 3
+BATCH_SIZE = 1
 
 """ https://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html
 The discount, GAMMA, should be a constant between 0 and 1 that ensures the sum converges. 
@@ -35,23 +35,23 @@ A lower GAMMA makes rewards from the uncertain far future less important for our
 that it can be fairly confident about. It also encourages agents to collect reward closer in time than equivalent 
 rewards that are temporally far away in the future.
 """
-GAMMA = 0.99
-EPS_START = 0.3
-EPS_END = 0.01
+GAMMA = 0.3
+EPS_START = 0
+EPS_END = 0
 EPS_DECAY = 500
 """
 The target network is updated at every step with a soft update controlled by the hyperparameter TAU, 
 which was previously defined.
 """
-TAU = 0.005
+TAU = 1
 LR = 1e-4
 
 HIDDEN_SIZE = 64
 
 # Model stuff
-TARGET_UPDATE = 3
+TARGET_UPDATE = 1
 
 # Env stuff
-RANDOM_NEWS_RATE = 0.1
+# RANDOM_NEWS_RATE = 0.1
 STATE_WINDOW = 10
 NEWS_NUMBER = 10

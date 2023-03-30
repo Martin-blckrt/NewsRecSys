@@ -3,34 +3,46 @@ import numpy as np
 import torch
 
 from data_utils import load_dataset, load_history, sync_history
-from constants import RANDOM_NEWS_RATE, STATE_WINDOW
+from constants import STATE_WINDOW
 
 
 class Environment:
 
     def __init__(self, *, user_id: str, local: bool = False):
 
-        self.news_df = load_dataset(local)
-
-        self.data_df = pd.get_dummies(self.news_df, columns=["source"])
-        cols = list(self.news_df.columns)
-
-        remov = ["url", "source"]
-        for rc in remov:
-            cols.remove(rc)
-
-        self.data_df = self.data_df.drop(cols, axis=1)
-
         self.user_id = user_id
+        self.state_windows = STATE_WINDOW
+
         self.history, self.state_history = load_history(self.user_id, local)
 
-        self.news_df = self.news_df[~self.news_df['url'].isin(self.history)]
+        self.news_df = load_dataset(local)
 
-        self.state_windows = STATE_WINDOW
-        self.news_rand_rate = RANDOM_NEWS_RATE
+        self.data_df, nb_removed = self.encode_news_df()
+        # self.news_df = self.news_df[~self.news_df['url'].isin(self.history)]
 
-        self.INPUT_SIZE = len(self.data_df.columns) - len(remov) + 1
+        self.INPUT_SIZE = len(self.data_df.columns) - nb_removed + 1
         self.OUTPUT_SIZE = len(self.news_df)
+
+    def encode_news_df(self):
+        # encode df
+        data_df = pd.get_dummies(self.news_df, columns=["source"])
+
+        # gather all unwanted  columns, and remove the ones we keep
+        cols_to_remove = list(self.news_df.columns)
+
+        keep_col = ["url", "source"]
+        for c in keep_col:
+            cols_to_remove.remove(c)
+
+        data_df = data_df.drop(cols_to_remove, axis=1)
+
+        # creates 'read_by_user' attribute after the last col
+        data_df.insert(len(data_df.columns), "read_by_user", 0)
+
+        # check all read news with a 1
+        data_df.loc[data_df['url'].isin(self.history), 'read_by_user'] = 2
+
+        return data_df, len(keep_col)
 
     def get_input_size(self):
         return self.INPUT_SIZE
@@ -45,10 +57,12 @@ class Environment:
 
         array = np.zeros((self.state_windows, self.INPUT_SIZE))
 
-        for index, state_list in enumerate(last_k_states):
+        for index, (news_url, state_list) in enumerate(zip(last_k_news, last_k_states)):
             for state_val in state_list:
                 for i, name in enumerate(self.data_df.columns[1:]):
                     array[index][i] = int(name == state_val)
+
+            array[index][-1] = self.data_df.loc[self.data_df["url"] == news_url].values[0][-1]
 
         state = np.mean(array, axis=0)
 
@@ -69,6 +83,7 @@ class Environment:
 
         self.history.append(recent)
 
+        self.data_df.loc[self.data_df["url"] == recent, 'read_by_user'] = 2
         matching_df = self.data_df.loc[lambda df: df["url"] == recent]
 
         one_col = matching_df.apply(lambda row: row[row == 1], axis=1)

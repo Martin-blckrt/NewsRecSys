@@ -71,7 +71,20 @@ while True:
 """
 
 if __name__ == '__main__':
-    run(app=app, host=HOST, port=PORT)
+    model = Model()
+    model.login_user("0", local=False)
+    choices = []
+    while True:
+        recommended = model.recommend_news()
+        print(recommended)
+        print("You already choose:", *choices)
+        user = input("Choose ID (nb, not url): ")
+
+        if user == '-1':
+            break
+        choices.append(user)
+        url = recommended.loc[recommended['id'] == user]['url'].values[0]
+        model.get_user_response(url)
 
     # when app turns off, save history
     model.env.synchronize_history(model.user_id)
