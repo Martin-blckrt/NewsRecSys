@@ -75,9 +75,25 @@ while True:
 """
 
 if __name__ == '__main__':
-    run(app=app, host=HOST, port=PORT)
+    # run(app=app, host=HOST, port=PORT)
 
     # when app turns off, save history
-    model.quit()
+    # model.quit()
+    model = Model()
+    recommended = model.recommend_news("0")
+    print(recommended)
+    choices = []
+    while True:
+        print("You already chose:", *choices)
+        user = input("Choose ID : ")
+        if user == "-1":
+            model.quit()
+            recommended = model.recommend_news("0")
+            print(recommended)
+            choices = []
+        else:
+            choices.append(user)
+            url = recommended.loc[recommended['id'] == user]['url'].values[0]
+            model.get_user_response(url)
 
     print("\nEnd of the program, thx bye bye")
