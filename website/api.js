@@ -131,24 +131,20 @@ function createCard(title, image, description, link, type) {
               '</div>';
   } else if (type === 'twitter') {
     const id = link.split("/status/")[1];
-    link = 'https://twitter.com/x/status/' + id;
+    link_embed = 'https://twitter.com/x/status/' + id;
     card =    '<div class="card twitter-card" id=' + link +'>' +
                 '<blockquote class="twitter-tweet">' +
-                  '<a href="' + link + '"></a>' +
+                  '<a href="' + link_embed + '"></a>' +
                 '</blockquote>' +
             '</div>';
   } else if (type === 'reddit') {
-    link = link.concat('embed');
-    card = `
+  card = `
     <div class="card" id="${link}">
-      <blockquote class="reddit-card">
-        <a href="${link}"></a> from 
-        <a href="https://www.reddit.com/">Reddit</a>
-      </blockquote>
+      <blockquote class="reddit-card"><a href=${link}></a></blockquote>
       <script async src="https://embed.redditmedia.com/widgets/platform.js" charset="UTF-8"></script>
     </div>
   `;
-  }
+}
   
   return card;
 }
