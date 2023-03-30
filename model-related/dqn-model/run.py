@@ -92,7 +92,9 @@ if __name__ == '__main__':
         url = recommended.loc[recommended['id'] == user]['url'].values[0]
         model.get_user_response(url)
 
+    # run(app=app, host=HOST, port=PORT)
+
     # when app turns off, save history
-    model.env.synchronize_history(model.user_id)
+    # model.env.synchronize_history(model.user_id)
 
     print("\nEnd of the program, thx bye bye")
