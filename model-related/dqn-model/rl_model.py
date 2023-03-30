@@ -1,6 +1,6 @@
 import pandas as pd
 import torch.optim as optim
-from constants import TARGET_UPDATE, MEMORY_SIZE, Episode
+from constants import TARGET_UPDATE, MEMORY_SIZE, TAU
 from qlearning import DQN, device, ReplayMemory, optimize_model
 from agent import Agent
 from environment import Environment
@@ -81,7 +81,14 @@ class Model:
         optimize_model(self.memory, self.policy_net, self.target_net, self.optimizer, self.output_size)
 
         if self.iter_counter % self.target_update == 0:
-            self.target_net.load_state_dict(self.policy_net.state_dict())
+            target_net_state_dict = self.target_net.state_dict()
+            policy_net_state_dict = self.policy_net.state_dict()
+
+            for key in policy_net_state_dict:
+                target_net_state_dict[key] = policy_net_state_dict[key]*TAU + target_net_state_dict[key]*(1-TAU)
+
+            self.target_net.load_state_dict(target_net_state_dict)
+            # self.target_net.load_state_dict(self.policy_net.state_dict())
 
         self.reward_cum_sum += reward[0].item()
 
