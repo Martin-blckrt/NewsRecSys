@@ -104,7 +104,7 @@ function createCard(title, image, description, link, type) {
   } else if (type === 'twitter') {
     const id = link.split("/status/")[1];
     link = 'https://twitter.com/x/status/' + id;
-    card =    '<div class="card" id=' + link +'>' +
+    card =    '<div class="card twitter-card" id=' + link +'>' +
                   '<blockquote class="twitter-tweet">' +
                     '<a href="' + link + '"></a>' +
                   '</blockquote>' +
