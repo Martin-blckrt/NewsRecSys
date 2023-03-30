@@ -34,8 +34,10 @@ window.addEventListener("blur", () => {
     if (document.activeElement.tagName === "IFRAME") {
       if (document.activeElement.title === 'Twitter Tweet') {
         console.log(document.activeElement.parentElement.parentElement.id);
+        get_user_response(document.activeElement.parentElement.parentElement.id);
       } else {
         console.log(document.activeElement.parentElement.parentElement.parentElement.id);
+        get_user_response(document.activeElement.parentElement.parentElement.parentElement.id);
       }
       window.focus();
     }
@@ -82,6 +84,32 @@ function recommend_news(user_id) {
     .catch(error => console.error(error));
 }
 
+function get_user_response(url) {
+
+  let api_url = 'http://127.0.0.1:8000/response/';
+
+  // Create a JSON payload with the URL
+  let payload = {
+    url: url
+  };
+
+  fetch(api_url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(
+    (res) => {
+      // if request is okay return its json, otherwise display an error
+      if (res.ok) {
+        return res.json();
+      }
+    }
+  )
+}
+
 function createCard(title, image, description, link, type) {
   var card = '';
   
@@ -105,11 +133,10 @@ function createCard(title, image, description, link, type) {
     const id = link.split("/status/")[1];
     link = 'https://twitter.com/x/status/' + id;
     card =    '<div class="card twitter-card" id=' + link +'>' +
-                  '<blockquote class="twitter-tweet">' +
-                    '<a href="' + link + '"></a>' +
-                  '</blockquote>' +
-              '</div>';
-
+                '<blockquote class="twitter-tweet">' +
+                  '<a href="' + link + '"></a>' +
+                '</blockquote>' +
+            '</div>';
   } else if (type === 'reddit') {
     link = link.concat('embed');
     card = `
@@ -156,10 +183,8 @@ function addListeners() {
   cards.forEach(card => {
     card.addEventListener('click', event => {
       const clickedCard = event.target.closest('a');
-      const cardTitle = clickedCard.querySelector('.card-caption').textContent;
-      console.log(`L'utilisateur a cliqué sur la card suivante :
-      Titre : ${cardTitle}
-      URL: ${clickedCard}`);
+      console.log(clickedCard.getAttribute('href'));
+      get_user_response(clickedCard.getAttribute('href'));
     });
   });
   twttr.widgets.load();
