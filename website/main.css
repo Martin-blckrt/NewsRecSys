@@ -875,3 +875,8 @@ figure:hover+span {
   border: none;
   box-shadow: none;
 }
+
+#container {
+  padding-left: 20px;
+  padding-right: 20px;
+}
