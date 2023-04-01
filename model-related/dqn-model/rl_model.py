@@ -1,6 +1,7 @@
 import os.path
 
 import pandas as pd
+import numpy as np
 import torch
 import torch.optim as optim
 from constants import TARGET_UPDATE, MEMORY_SIZE, TAU, Episode
@@ -29,6 +30,7 @@ class Model:
 
         self.output_size = None
         self.list_eps = None
+        self.avg_rewards = None
         self.iter_counter = 0
         self.reward_cum_sum = 0
 
@@ -43,6 +45,7 @@ class Model:
         # does not reset vars if user is the same
         if self.user_id != user_id:
             self.user_id = user_id
+            self.avg_rewards = []
             self.iter_counter = 0
 
         """create env, agent, state, memory & networks"""
@@ -89,10 +92,15 @@ class Model:
             self.target_net.load_state_dict(target_net_state_dict)
             # self.target_net.load_state_dict(self.policy_net.state_dict())
 
+    def avg_metric(self):
+        rewards = [ep.reward[0].item() for ep in list(self.list_eps.values())]
+        self.avg_rewards.append(np.mean(rewards))
+
     def recommend_news(self, user_id) -> pd.DataFrame:
 
         if self.iter_counter != 0:
             self.quit()
+            self.avg_metric()
 
         self.login_user(user_id, local=False)
 
@@ -112,8 +120,11 @@ class Model:
         print("User Response is:", user_response)
 
         reward = torch.tensor([1])
-        self.list_eps[user_response]._replace(reward=reward)
-        self.list_eps[user_response]._replace(next_state=self.env.update_state(current_state=self.state, reward=reward))
+
+        new_ep = self.list_eps[user_response]._replace(reward=reward)
+        new_ep = new_ep._replace(next_state=self.env.update_state(current_state=self.state, reward=reward))
+
+        self.list_eps[user_response] = new_ep
 
         self.env.update_history(user_response)
 
