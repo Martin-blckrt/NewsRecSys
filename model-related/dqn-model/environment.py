@@ -86,3 +86,8 @@ class Environment:
 
     def get_action_news(self, action_list: list) -> pd.DataFrame:
         return self.news_df.loc[self.news_df["url"].isin(action_list)]
+
+    def get_sources(self, action_list: list):
+
+        news_df = self.get_action_news(action_list)
+        return news_df["source"].values

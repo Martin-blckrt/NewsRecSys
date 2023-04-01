@@ -1,13 +1,15 @@
 import os.path
 
 import pandas as pd
-import numpy as np
+import matplotlib.pyplot as plt
+
 import torch
 import torch.optim as optim
 from constants import TARGET_UPDATE, MEMORY_SIZE, TAU, Episode
 from qlearning import DQN, device, ReplayMemory, optimize_model
 from agent import Agent
 from environment import Environment
+from metrics import avg_metric, similarity
 
 
 class Model:
@@ -31,6 +33,7 @@ class Model:
         self.output_size = None
         self.list_eps = None
         self.avg_rewards = None
+        self.sim_scores = None
         self.iter_counter = 0
         self.reward_cum_sum = 0
 
@@ -46,6 +49,7 @@ class Model:
         if self.user_id != user_id:
             self.user_id = user_id
             self.avg_rewards = []
+            self.sim_scores = []
             self.iter_counter = 0
 
         """create env, agent, state, memory & networks"""
@@ -90,17 +94,18 @@ class Model:
                         1 - TAU)
 
             self.target_net.load_state_dict(target_net_state_dict)
-            # self.target_net.load_state_dict(self.policy_net.state_dict())
+    
+    def update_metrics(self):
+        self.avg_rewards.append(avg_metric(self.list_eps))
 
-    def avg_metric(self):
-        rewards = [ep.reward[0].item() for ep in list(self.list_eps.values())]
-        self.avg_rewards.append(np.mean(rewards))
+        reco_sources = self.env.get_sources(self.action_news)
+
+        self.sim_scores.append(similarity(self.env.state_history, reco_sources, method="jaccard"))
 
     def recommend_news(self, user_id) -> pd.DataFrame:
 
         if self.iter_counter != 0:
             self.quit()
-            self.avg_metric()
 
         self.login_user(user_id, local=False)
 
@@ -130,6 +135,33 @@ class Model:
 
     def quit(self):
         self.update_model()
+
+        self.update_metrics()
+
         self.policy_net.save(self.user_id, name="policy")
         self.target_net.save(self.user_id, name="target")
         self.env.synchronize_history(self.user_id)
+
+    def plot_metrics(self):
+
+        nb_data = self.iter_counter - 1
+
+        if nb_data <= 0:
+            print("Not enough data points to plot")
+            return
+
+        iter_range = range(nb_data)
+
+        # average reward
+        plt.figure(figsize=(10, 8))
+        plt.subplot(1, 2, 1)
+        plt.plot(iter_range, self.avg_rewards, label='Average')
+        plt.legend(loc='lower right')
+        plt.title('Average reward by iterations')
+
+        # similarity
+        plt.subplot(1, 2, 2)
+        plt.plot(iter_range, self.sim_scores, label='Similarity')
+        plt.legend(loc='upper right')
+        plt.title('Similarity by iterations')
+        plt.show()
