@@ -17,8 +17,9 @@ def similarity(list1, list2, method="jaccard"):
     bin1, bin2 = to_binary(list1, list2)
 
     if method == "cosine":
-        return distance.cosine(bin1, bin2)
+        return distance.cosine(bin1, bin2)  # lower is better
     elif method == "jaccard":
-        return distance.jaccard(bin1, bin2)
+        return distance.jaccard(bin1, bin2)  # lower is better
     else:
-        return distance.kulczynski1(bin1, bin2)
+        return distance.kulczynski1(bin1, bin2)  # higher is better
+        # maybe return 1/(dist + 1) if we want to make it "lower is better"
