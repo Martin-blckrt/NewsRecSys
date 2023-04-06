@@ -95,6 +95,7 @@ if __name__ == '__main__':
         elif user == "stop":
             model.quit()  # essentiel to update metrics
             model.plot_metrics()
+            break
         else:
             choices.append(user)
             url = recommended.loc[recommended['id'] == user]['url'].values[0]

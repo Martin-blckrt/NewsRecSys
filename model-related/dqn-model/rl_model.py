@@ -100,12 +100,18 @@ class Model:
 
         reco_sources = self.env.get_sources(self.action_news)
 
-        self.sim_scores.append(similarity(self.env.state_history, reco_sources, method="jaccard"))
+        # méthode trimming but this function doesn't happen if len(hist) < 10
+        state_hist = [j for state in self.env.state_history[-len(reco_sources):] for j in state]
+
+        self.sim_scores.append(similarity(state_hist, reco_sources, method="jaccard"))
 
     def recommend_news(self, user_id) -> pd.DataFrame:
 
         if self.iter_counter != 0:
             self.quit()
+
+            if len(self.env.state_history) >= len(self.action_news):
+                self.update_metrics()
 
         self.login_user(user_id, local=False)
 
@@ -136,8 +142,6 @@ class Model:
     def quit(self):
         self.update_model()
 
-        self.update_metrics()
-
         self.policy_net.save(self.user_id, name="policy")
         self.target_net.save(self.user_id, name="target")
         self.env.synchronize_history(self.user_id)
@@ -146,8 +150,8 @@ class Model:
 
         nb_data = self.iter_counter - 1
 
-        if nb_data <= 0:
-            print("Not enough data points to plot")
+        if nb_data <= 0 or (len(self.env.state_history) < len(self.action_news)):
+            print("Not enough data points or history data to plot")
             return
 
         iter_range = range(nb_data)

@@ -89,5 +89,7 @@ class Environment:
 
     def get_sources(self, action_list: list):
 
-        news_df = self.get_action_news(action_list)
-        return news_df["source"].values
+        matches = self.data_df.loc[self.data_df["url"].isin(action_list)]
+        one_col = matches.apply(lambda row: row[row == 1], axis=1)
+
+        return list(one_col.columns)
