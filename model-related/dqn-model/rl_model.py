@@ -154,7 +154,7 @@ class Model:
             print("Not enough data points or history data to plot")
             return
 
-        iter_range = len(self.avg_rewards)
+        iter_range = range(len(self.avg_rewards))
 
         # average reward
         plt.figure(figsize=(10, 8))
