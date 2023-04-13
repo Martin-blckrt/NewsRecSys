@@ -115,7 +115,8 @@ function createCard(title, image, description, link, type) {
   var card = '';
   
   if (type === 'classic') {
-    card =    '<div class="card card-blog">' +
+    if (image !== 0) {
+      card =    '<div class="card card-blog">' +
                 '<a href="' + link + '" target="_blank">' +
                   '<div class="card-image">' +
                     '<figure style="margin-bottom: 0">' +
@@ -125,11 +126,23 @@ function createCard(title, image, description, link, type) {
                     '<div class="ripple-cont"></div>' +
                   '</div>' +
                   '<div class="table">' +
-                    '<h6 class="category text-info"><i class="fa fa-newspaper"></i>' + type + '</h6>' +
+                    '<h6 class="category text-info"><i class="fa fa-newspaper"></i>Classic</h6>' +
                     '<p class="card-description">' + description + '</p>' +
                   '</div>' +
                 '</a>' +
               '</div>';
+    }
+    else {
+      card =    '<div class="card card-blog">' +
+                '<a href="' + link + '" target="_blank">' +
+                  '<div class="table">' +
+                    '<h6 class="category text-info"><i class="fa fa-newspaper"></i>Classic</h6>' +
+                    '<p class="card-description">' + title + '</p>' +
+                  '</div>' +
+                '</a>' +
+              '</div>';
+    }
+    
   } else if (type === 'twitter') {
     const id = link.split("/status/")[1];
     link_embed = 'https://twitter.com/x/status/' + id;
