@@ -55,6 +55,7 @@ form.addEventListener("submit", function(event) {
 function submit_id(event) {
   let user_id = document.getElementById("user-id").value;
   recommend_news(user_id);
+  document.getElementById("top_header").style.paddingBottom = "50px";
   event.preventDefault();
 }
 
@@ -124,7 +125,7 @@ function createCard(title, image, description, link, type) {
                     '<div class="ripple-cont"></div>' +
                   '</div>' +
                   '<div class="table">' +
-                    '<h6 class="category text-info"><i class="fa fa-soundcloud"></i> Data Science</h6>' +
+                    '<h6 class="category text-info"><i class="fa fa-newspaper"></i>' + type + '</h6>' +
                     '<p class="card-description">' + description + '</p>' +
                   '</div>' +
                 '</a>' +

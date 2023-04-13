@@ -16,18 +16,20 @@
 <body>
 <article class="col-md-12" style="background-color: #524f4f;">
     <!-- Modern - Bootstrap Cards -->
-    <div class="container header">
-        <div style="color:#dedcdc">
+    <div class="container header" id="top_header">
+        <div id="logo" style="color:#dedcdc">
             <img alt="logo" src="logo.svg" width="50px" style="margin-right:1rem"></img>
             Your Tech Wave
         </div>
-        <div class="form-container" style="display: flex; justify-content: center;">
-        <form id="my-form">
-            <label for="user-id" style="color:#dedcdc;">User ID</label>
-            <input type="text" id="user-id" value="">
-            <button type="submit" id="submit-id" style="background-color: #dedcdc; color: #524f4f; border: none;">Submit</button>
-        </form>
-    </div>
+        <div class="form-container">
+            <form id="my-form">
+                <div style="display: flex;justify-content: flex-end;column-gap: 10px">
+                    <label for="user-id" style="color:#dedcdc;">Enter your user ID : </label>
+                    <input type="text" id="user-id" value="">
+                    <button type="submit" id="submit-id">Submit<i style="padding-left: 10px" class="fa fa-paper-plane"></i></button>
+                </div>
+            </form>
+        </div>
     </div>
     <div class="cards-1 section-gray" style="background-image: linear-gradient(to bottom, #524f4f 0%, #383535 100%);">
         <div id="container">

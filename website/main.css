@@ -51,7 +51,7 @@ SECTIONS
 
 .section-gray {
 	background: #E5E5E5;
-	padding: 60px 0 30px 0;
+	padding: 0 0 30px 0;
 }
 
 
@@ -812,6 +812,8 @@ header {
 	margin-top: 2rem;
 	font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 	font-size: 1rem;
+	display: flex;
+	justify-content: space-between;
 }
 
 h1, .h1 {
@@ -877,6 +879,32 @@ figure:hover+span {
 }
 
 #container {
-  padding-left: 20px;
-  padding-right: 20px;
+	padding: 0 20px 10px 20px;
+}
+
+#user-id {
+	border: 0;
+	width: 10%;
+	border-bottom: 2px solid gray;
+	color: white;
+	background: transparent;
+	transition: border-color 0.2s;
+}
+
+#submit-id {
+	border-radius: 10px;
+	cursor: pointer;
+	padding-left: 0.75em;
+	padding-right: 0.5em;
+	position: relative;
+	background-clip: padding-box;
+	background-color: unset;
+	border: 1px solid #dedcdc;
+	color: #dedcdc;
+}
+
+#submit-id:hover {
+	background-color: #dedcdc;
+	color: #524f4f;
+	transition: 0.3s ease-out;
 }
