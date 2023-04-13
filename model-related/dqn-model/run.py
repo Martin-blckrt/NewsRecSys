@@ -46,6 +46,13 @@ def get_user_response(news_click: NewsClick):
     return JSONResponse(content="ok")
 
 
+@app.on_event("shutdown")
+def shutdown_event():
+    print("Application successfully terminated")
+    # when app turns off, save history
+    model.quit()
+    model.plot_metrics()
+
 """
 Scénar Pipeline A -> Z
 
@@ -75,30 +82,5 @@ while True:
 """
 
 if __name__ == '__main__':
-    # run(app=app, host=HOST, port=PORT)
-
-    # when app turns off, save history
-    # model.quit()
-    model = Model()
-    recommended = model.recommend_news("0")
-    print(recommended)
-    choices = []
-    while True:
-        print("You already chose:", *choices)
-        user = input("Choose ID : ")
-        if user == "-1":
-            model.quit()
-            recommended = model.recommend_news("0")
-            print(recommended)
-            choices = []
-
-        elif user == "stop":
-            model.quit()  # essentiel to update metrics
-            model.plot_metrics()
-            break
-        else:
-            choices.append(user)
-            url = recommended.loc[recommended['id'] == user]['url'].values[0]
-            model.get_user_response(url)
-
-    print("\nEnd of the program, thx bye bye")
+    run(app=app, host=HOST, port=PORT)
+    print("End of the program, thx bye bye")

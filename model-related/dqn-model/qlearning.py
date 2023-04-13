@@ -38,13 +38,15 @@ class DQN(nn.Module):
         super(DQN, self).__init__()
         self.fc1 = nn.Linear(input_size, HIDDEN_SIZE)
         self.fc2 = nn.Linear(HIDDEN_SIZE, HIDDEN_SIZE)
-        self.fc3 = nn.Linear(HIDDEN_SIZE, output_size)
+        self.fc3 = nn.Linear(HIDDEN_SIZE, HIDDEN_SIZE)
+        self.fc4 = nn.Linear(HIDDEN_SIZE, output_size)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = x.to(device)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = F.softmax(self.fc3(x), dim=-1)
+        x = F.relu(self.fc3(x))
+        x = F.softmax(self.fc4(x), dim=-1)
         return x
 
     def load(self, user_id, name):
