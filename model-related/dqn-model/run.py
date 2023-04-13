@@ -30,7 +30,6 @@ def create_model(user_id: str) -> None:
 
 @app.get('/recommend-news/{user_id}')
 def recommend_news(user_id: str):
-    # l'user_id n'est plus là car on l'a déjà grâce au login
     recommended = model.recommend_news(user_id)
     print(recommended)
     df = recommended[['source', 'title', 'image', 'description', 'url']]

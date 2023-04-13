@@ -104,6 +104,10 @@ class Model:
         state_hist = [j for state in self.env.state_history[-len(reco):] for j in state]
 
         flat_reco = [item for sublist in reco for item in sublist]
+
+        if len(flat_reco) != len(state_hist):
+            print("Problem spotted")
+
         self.sim_scores.append(similarity(state_hist, flat_reco, method="jaccard"))
 
     def recommend_news(self, user_id) -> pd.DataFrame:
