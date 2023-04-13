@@ -18,25 +18,25 @@ class Environment:
         self.news_df = load_dataset(local)
         self.news_df = self.news_df[~self.news_df['url'].isin(self.history)]
 
-        self.data_df, nb_removed = self.encode_news_df()
+        self.data_df = self.encode_news_df()
 
-        self.INPUT_SIZE = len(self.data_df.columns) - nb_removed + 1
+        self.INPUT_SIZE = len(self.data_df.columns) - 1
         self.OUTPUT_SIZE = len(self.news_df)
 
     def encode_news_df(self):
         # encode df
-        data_df = pd.get_dummies(self.news_df, columns=["source"])
+        data_df = pd.get_dummies(self.news_df, columns=["source", "tag"])
 
         # gather all unwanted  columns, and remove the ones we keep
         cols_to_remove = list(self.news_df.columns)
 
-        keep_col = ["url", "source"]
+        keep_col = ["url", "source", "tag"]
         for c in keep_col:
             cols_to_remove.remove(c)
 
         data_df = data_df.drop(cols_to_remove, axis=1)
 
-        return data_df, len(keep_col)
+        return data_df
 
     def get_input_size(self):
         return self.INPUT_SIZE
@@ -90,6 +90,5 @@ class Environment:
     def get_sources(self, action_list: list):
 
         matches = self.data_df.loc[self.data_df["url"].isin(action_list)]
-        one_col = matches.apply(lambda row: row[row == 1], axis=1)
-
-        return list(one_col.columns)
+        one_col = matches.apply(lambda row: row[row == 1].index, axis=1)
+        return [i.to_list() for i in one_col.to_list()]
