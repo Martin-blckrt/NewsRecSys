@@ -12,6 +12,24 @@
     <script src="https://embed.redditmedia.com/widgets/platform.js" charset="UTF-8"></script>
     <script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <link rel="icon" type="image/x-icon" href="logo.svg">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reddit-embed@1.1.2/css/red.css"/>
+    <!-- Make sure you import color palettes after red.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reddit-embed@1.1.2/css/light-theme.css"/>
+    <!-- JS source file -->
+    <script src ="https://cdn.jsdelivr.net/npm/reddit-embed@1.1.2"></script>
+    <script>
+      /* Specify any default options you want
+       to change at the start of a NEW script tag */
+      red.setDefaults({
+        show_comments_section_header:false,
+        show_comments_section: false,
+        show_post_body: false,
+        initial_padding: 100,
+      })
+      // Call embedAll after HTML content is loaded
+      window.onload = red.embedAll
+    </script>
 </head>
 <body>
 <article class="col-md-12" style="background-color: #524f4f;">

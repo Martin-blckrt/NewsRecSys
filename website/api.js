@@ -153,9 +153,7 @@ function createCard(title, image, description, link, type) {
             '</div>';
   } else if (type === 'reddit') {
   card = `
-    <div class="card" id="${link}">
-      <blockquote class="reddit-card"><a href=${link}></a></blockquote>
-      <script async src="https://embed.redditmedia.com/widgets/platform.js" charset="UTF-8"></script>
+    <div class="card reddit-embed" id="${link}" red-opts='{"initial_padding": 10}' red-href="${link}about.json">
     </div>
   `;
 }
@@ -184,6 +182,7 @@ function showCards(news_model) {
   }
 
   twttr.widgets.load();
+  red.embedAll();
   addListeners();
 }
 
@@ -193,8 +192,11 @@ function addListeners() {
   cards.forEach(card => {
     card.addEventListener('click', event => {
       const clickedCard = event.target.closest('a');
-      console.log(clickedCard.getAttribute('href'));
-      get_user_response(clickedCard.getAttribute('href'));
+
+      if (clickedCard !== null) {
+        console.log(clickedCard.getAttribute('href'));
+        get_user_response(clickedCard.getAttribute('href'));
+      }
     });
   });
   twttr.widgets.load();
