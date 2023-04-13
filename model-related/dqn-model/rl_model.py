@@ -98,12 +98,13 @@ class Model:
     def update_metrics(self):
         self.avg_rewards.append(avg_metric(self.list_eps))
 
-        reco_sources = self.env.get_sources(self.action_news)
+        reco = self.env.get_sources(self.action_news)
 
         # méthode trimming but this function doesn't happen if len(hist) < 10
-        state_hist = [j for state in self.env.state_history[-len(reco_sources):] for j in state]
+        state_hist = [j for state in self.env.state_history[-len(reco):] for j in state]
 
-        self.sim_scores.append(similarity(state_hist, reco_sources, method="jaccard"))
+        flat_reco = [item for sublist in reco for item in sublist]
+        self.sim_scores.append(similarity(state_hist, flat_reco, method="jaccard"))
 
     def recommend_news(self, user_id) -> pd.DataFrame:
 
