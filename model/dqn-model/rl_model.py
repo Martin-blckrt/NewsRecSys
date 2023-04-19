@@ -9,7 +9,7 @@ from constants import TARGET_UPDATE, MEMORY_SIZE, TAU, Episode
 from qlearning import DQN, device, ReplayMemory, optimize_model
 from agent import Agent
 from environment import Environment
-from metrics import avg_metric, similarity
+from model.utils.metrics import avg_metric, similarity
 
 
 class Model:

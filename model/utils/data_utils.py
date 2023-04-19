@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from azure_utils import client_init, get_db, get_container
+from model.utils.azure_utils import client_init, get_db, get_container
 
 
 def load_dataset(local: bool) -> pd.DataFrame:
