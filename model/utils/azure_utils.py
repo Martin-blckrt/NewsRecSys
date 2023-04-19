@@ -8,7 +8,7 @@ def client_init():
         "primarykey": "TkeewxqZmQf61VqBhsly4OQ0fh1DElNRstDdQNUiwtrFjH8YkZse2L1o8UhOKmENcMLDAFErhExxACDb171Y9A=="
     }
 
-    # Create the cosmos client
+    # Create the scraping client
     client = cosmos_client.CosmosClient(url=config["endpoint"], credential={"masterKey": config["primarykey"]})
 
     return client

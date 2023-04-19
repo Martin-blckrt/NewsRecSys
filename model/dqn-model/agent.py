@@ -7,6 +7,7 @@ from qlearning import DQN, device
 class Agent:
 
     def __init__(self, action_space: list, input_size: int, output_size: int) -> None:
+        # contrôle de l'exploration
         self.epsilon_start = EPS_START
         self.epsilon_min = EPS_END
         self.epsilon_decay = EPS_DECAY
@@ -23,9 +24,12 @@ class Agent:
 
         action_news = []
         random_count = 0
+
+        # calcul du nombre de news random
         for _ in range(NEWS_NUMBER):
             random_count += (np.random.uniform(0, 1) < self.__get_epsilon__())
 
+        # prédiction du modèle
         with torch.no_grad():
             action_tensor = self.policy_net(state)
 
@@ -33,6 +37,7 @@ class Agent:
         for index in random_indices:
             action_tensor[index] = 1
 
+        # récupération des meilleures news
         action_indices = torch.topk(action_tensor, NEWS_NUMBER).indices
         temp = []
         for index in action_indices:

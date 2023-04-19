@@ -13,13 +13,17 @@ class Environment:
         self.user_id = user_id
         self.state_windows = STATE_WINDOW
 
+        # récupération de l'historique de l'utilisateur
         self.history, self.state_history = load_history(self.user_id, local)
 
+        # récupération du dataset sans les news déjà lues
         self.news_df = load_dataset(local)
         self.news_df = self.news_df[~self.news_df['url'].isin(self.history)]
 
+        # encodage du dataset en binaire
         self.data_df = self.encode_news_df()
 
+        # définition des tailles du modèle
         self.INPUT_SIZE = len(self.data_df.columns) - 1
         self.OUTPUT_SIZE = len(self.news_df)
 
@@ -64,6 +68,7 @@ class Environment:
         return list(pd.unique(self.news_df["url"]))
 
     def update_state(self, current_state: torch.Tensor, reward: torch.Tensor) -> torch.Tensor:
+        # mise à jour du state uniquement si l'article a été lu
         if reward[0].item() > 0:
             new_state = self.get_state()
             return new_state
