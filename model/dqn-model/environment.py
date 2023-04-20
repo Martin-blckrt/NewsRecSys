@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import torch
 
-from model.utils.data_utils import load_dataset, load_history, sync_history
+from data_utils import load_dataset, load_history, sync_history
 from constants import STATE_WINDOW
 
 
