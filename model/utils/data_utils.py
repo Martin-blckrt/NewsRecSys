@@ -99,11 +99,3 @@ def sync_history(user_id, hist, st_hist):
         response = container.replace_item(item=read_item, body=read_item)
 
     print(f'User {user_id} history updated')
-
-
-"""
-Little scripts for Azure CosmoDB tests
-
-fake_hist = ["12", "6"]
-sync_history(user_id="1", hist=fake_hist)
-"""
