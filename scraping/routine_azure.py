@@ -69,7 +69,13 @@ def get_data_from_search(client, tweets_data, KEYWORDS, bool_acc):
                    "tag": str(tweet.author_id) if bool_acc else get_tag_from_tweet(tweet, KEYWORDS)
                    }
 
-            res.append(obj)
+            if not bool_acc:
+                if obj['likes'] > 0 or obj['retweets'] > 0 or obj['replies'] > 0 or obj['quotes'] > 0:
+                    if obj['impressions'] > 100:
+                        res.append(obj)
+            else:
+                res.append(obj)
+                
         return res
 
     return None
@@ -173,28 +179,21 @@ def twitter():
                 "keerthanpg",
                 "AiBreakfast",
                 "abacusai",
+                "TDataScience",
+                "towards_AI",
+                "BBCTech",
                 "dair_ai",
                 "Prathkum",
-                "marktenenholtz",
-                "Jeande_d",
-                "svpino",
                 "mathemagic1an",
-                "art_zucker",
-                "itsandrewgao",
-                "sama",
                 "trending_repos",
-                "RisingSayak",
                 "patloeber",
-                "tunguz",
-                "quantumVerd",
-                "FrnkNlsn",
-                "SchmidhuberAI",
                 "CSProfKGD",
-                # "ccanonne_",
-                # "Michael_J_Black",
-                # "heyBarsee",
-                # "ptrblck_de",
-                "mervenoyann"]
+                "Michael_J_Black",
+                "heyBarsee",
+                "ptrblck_de",
+                "rowancheung",
+                "_geekculture_",
+                "AI_PlainEnglish"]
 
     KEYWORDS = ["Generative AI",
                 "SOTA",
